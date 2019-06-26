@@ -1,0 +1,76 @@
+.grid-stack-item-content {
+    background-repeat: no-repeat;
+    
+    cursor: -webkit-grab;
+    cursor: -moz-grab;
+}
+
+
+.grid-salvoes{
+    background-image: url(ocean.gif);
+    background-size: cover;
+    border: 2px solid rgb(128,128,128);
+    border-radius: 10px;
+    height: 495px;
+    width: 495px;
+}
+
+#grid{
+    margin: 45px 0 0 45px;
+    position: absolute;
+    width: 450px;
+ 
+}
+
+.grid-wrapper{
+    display: flex;
+    flex-direction: column;
+}
+
+.grid-row{
+    display: flex;
+    flex-direction: row;
+}
+
+.grid-cell{
+    display: flex;
+    box-sizing: border-box;
+    width: 45px;
+    height: 45px;
+    border: 1.3px solid rgb(128,128,128);
+    border-radius: 10px;
+    vertical-align: middle;
+    font-weight: bold;
+    text-align: center;
+    align-items: center;
+}
+.grid-cell span{
+    
+    margin: auto
+}
+
+.busy-cell{
+    background-color: rgba(0,119,190,0.5);
+    
+}
+
+.grid-row:first-child .grid-cell{
+    background-color: rgba(170,169,173,0.7);
+}
+
+.grid-cell:first-child{
+    background-color: rgba(170,169,173,0.7);
+}
+
+ .grid-salvoes .salvo{
+    background-color: blue;
+    text-align: center;
+
+}
+
+.grid-ships .salvo {
+    background-color: red;
+    text-align: center;
+
+
+}

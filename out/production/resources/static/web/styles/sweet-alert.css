@@ -1,0 +1,46 @@
+.swal-title {
+    margin: 0px;
+    font-size: 15px;
+    margin-bottom: 28px;
+  }
+
+.swal-text {
+    font-size: 15px;
+}
+ 
+.swal-modal {
+    width: 420px;
+}
+
+.fail-login-button{
+    background-color: #f8bb86;
+    font-size: 12px;
+    height: 40px;
+}
+
+.fail-signup-button{
+    background-color: #f27474;
+    font-size: 12px;
+    height: 40px;
+}
+
+.logout-button{
+    background-color: rgb(255, 190, 68);
+    font-size: 12px;
+    height: 40px;
+}
+
+.welcome-button{
+    padding: 4px 8px;
+    position: absolute;
+    margin-top: -92px;
+    margin-left: -13px;
+    font-weight: bold;
+    font-size: 12px;
+    background-color: teal;
+    
+}
+
+/*.welcome-button:hover{
+    background-color: #f27474;
+}*/

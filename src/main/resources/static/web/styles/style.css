@@ -1,0 +1,33 @@
+body{
+    font-family: Verdana,sans-serif;
+    font-size: 12px;
+}
+
+body h2, h3, h4{
+    font-family: Verdana,sans-serif;
+}
+
+body h3{
+    font-size: 19px;
+    
+}
+
+#username{
+    font-size: 25px;
+}
+
+#error{
+    display: none;
+}
+
+#error.show{
+    background-image: url('../images/403-forbidden-error.jpg');
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+    position: absolute;
+    z-index: 9999;
+    display: block;
+    width: 100vw;
+    height: 100vh;
+}

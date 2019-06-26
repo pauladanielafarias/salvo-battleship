@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Battleship Game View</title>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        
+    <!--Ship grid by Rodri-->
+    <link rel="stylesheet" href="dist/normalize.css" />
+    <link rel="stylesheet" href="dist/gridstack.css" />
+    <link rel="stylesheet" href="dist/gridstack-extra.css" />
+    <link rel="stylesheet" href="styles/ships-style.css" />
+   
+    <!--Salvo grid-->
+    <link rel="stylesheet" href="styles/salvoes-style.css" />
+
+    <!--w3.css stylesheet, w3pro.css stylesheet and color libraries-->
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3pro.css">
+    <link rel="stylesheet" href="https://www.w3schools.com/lib/w3-colors-2018.css">
+
+    <!--My css-->
+    <link rel="stylesheet" href="styles/style.css" />
+
+</head>
+
+<body>
+    <div id="error" onclick="location.href='games.html'">
+    </div>
+
+    <div id="app">
+        <!--ROW 1: BACK TO HOME BUTTON-->
+        <div class="w3-row-padding w3-left w3-margin-top">
+            <button onclick="location.href='games.html'" class="w3-button w3-blue w3-border">Home</button> 
+        </div>
+        <!--ROW 2: TITLE-->
+        <div class="w3-row-padding w3-center">
+            <h2>Salvo Game</h2>
+        </div>  
+        
+        <!--ROW 3: USERNAMES-->
+        <div id="users" class="w3-row-padding w3-center">
+            <h4>{{usernameP1}} (YOU) vs {{usernameP2}}</h4>
+        </div></br>
+
+        <!--ROW 4: GRIDS-->
+        <div class="w3-row-padding"> 
+                <!--SHIP GRID-->
+                <div class="w3-col m12 l6 w3-padding">
+                    <div class="w3-container">
+                        <h3>Ships Grid</h3>
+                        <div class="grid-ships">
+                            <div id="grid" class="grid-stack grid-stack-10">  
+                        </div>
+                    </div>
+                </div>
+            </div>  
+
+            <!--SALVO GRID-->
+            <div class="w3-col m12 l6 w3-padding">
+                <div  class="w3-container">
+                    <h3>Salvoes Grid</h3>
+
+                    <div class="grid-salvoes">
+                        <div id="grid" class="grid-stack grid-stack-10">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Vue.js development version, includes helpful console warnings -->
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+
+    <!--jquery-->
+    <script  src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+    
+    <!--Rodri's code-->
+    <script src="https://cdn.jsdelivr.net/npm/lodash@4.17.10/lodash.min.js"></script>
+    <script src="dist/jquery-ui.min.js"></script>
+    <script src="dist/gridstack.js"></script>
+    <script src="dist/gridstack.jQueryUI.js"></script>
+    <script src="dist/jquery.ui.touch-punch.min.js"></script>
+
+     <!--Sweet alert - replacement for JavaScript messages-->
+     <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+
+    <!--My script game-view.js-->
+    <script src="scripts/game-view.js"></script>
+
+</body>
+</html>
