@@ -8,6 +8,6 @@ import org.springframework.data.rest.core.annotation.RepositoryRestResource; // 
 
 public interface GameRepository extends JpaRepository<Game, Long> {
     //add all the methods you want
-    Game findById(long Id);
+    Game findById(long id);
 
 }

@@ -13,7 +13,6 @@ var app = new Vue({
 })
 
 // game view fetch
-
 getGameView()
 
 function getGameView(){
@@ -34,16 +33,27 @@ fetch("/api/game_view/"+ paramObj(location.search).gp, {mode:'no-cors'})
             document.getElementById('error').classList.remove('show')
             document.getElementById('app').style.display = 'block'
             gameView = json;
+
+
             printPlayersUsername(); // calling the funtion that prints the game players username
-            loadGrid(); // loads grid when it loads the page
+            if(gameView.ships.length == 0){
+                loadGrid(false); // loads grid. when there are still ships missing the grid is not static
+            }else{
+                loadGrid(true); // loads grid. when there are no ships missing the grid is static
+            }
+
             salvoes();// loads salvoes when it loads the page
 
             if(paramObj(location.search).newgame != undefined && paramObj(location.search).newgame == 'true'){
-                swal({text:"Hey " + app.currentPlayer +", you've created a new game! Now wait for another player to join you.", icon:"success", button: {text:"Great", className:"createdGame-button"}})
+                swal({text:"Hey " + app.currentPlayer +", you've created a new game! Have fun!", icon:"success", button: {text:"Great", className:"createdGame-button"}})
             
             }
             if(paramObj(location.search).join != undefined && paramObj(location.search).join == 'true'){
                 swal({text:"Hey " + app.currentPlayer + ", you've joined a new game. Have fun!", icon:"success", button: {text:"Thanks", className:"join-button"}})
+            }
+
+            if(paramObj(location.search).newships!= undefined && paramObj(location.search).newships == 'true'){
+                swal({text:"You've entered the ships. Now wait for another player to join you!", icon:"success", button: {text:"Great!", className:"newships-button"}})
             }
         }
 
@@ -52,13 +62,40 @@ fetch("/api/game_view/"+ paramObj(location.search).gp, {mode:'no-cors'})
     //swal({text:"Invalid Username or Password", icon:"warning", button:{className:"fail-login-button"}});
 });
 }
-
+// adding the ships fetch 
 function addShips(){
-let data = [ { locations: ["A1", "B1", "C1"], shipType: "destroyer" },
-{ locations: ["H5", "H6"] ,shipType: "patrolBoat"}]
+let dataShips = []
+
+let shipsList = document.querySelectorAll(".grid-stack-item");
+shipsList.forEach(function(ship){
+    let x = +(ship.dataset.gsX);
+    let y = +(ship.dataset.gsY);
+    let w = +(ship.dataset.gsWidth);
+    let h = +(ship.dataset.gsHeight);
+    let obj={};
+    let locs = []
+    let type = ship.id;
+
+    if(h>w){
+        for(i=0; i< h; i++){
+            locs.push(String.fromCharCode(65+y+i)+(x+1))
+        }
+    }else{
+        for(i=0; i< w; i++){
+            locs.push(String.fromCharCode(65+y)+(x+1+i))
+        }
+    }
+
+    obj.locations = locs;
+    obj.shipType = type;
+
+    dataShips.push(obj)
+
+})
+
  fetch("/api/games/players/" + paramObj(location.search).gp + "/ships",{
         method:'POST',
-        body: JSON.stringify(data),
+        body: JSON.stringify(dataShips),
         headers: {'Content-Type': 'application/json'}
         
     })
@@ -66,7 +103,7 @@ let data = [ { locations: ["A1", "B1", "C1"], shipType: "destroyer" },
         return response.json()
     }).then(function(json) {
         console.log(json)
-       getGameView()
+       window.location.replace("game-view.html?gp="+paramObj(location.search).gp+"&newgame=false&join=false&newships=true")
     }).catch(function(error){
         console.log(error)
     })
@@ -124,9 +161,11 @@ function paramObj(search) {
 /*SHIPS GRID*/
 
 //main function that shoots the gridstack.js framework and load the grid with the ships
-const loadGrid = function () {
+const loadGrid = function (hasShips) {
 
     document.getElementById("grid").innerHTML = ""
+
+   
 
     var options = { 
         //10 x 10 grid
@@ -144,7 +183,7 @@ const loadGrid = function () {
         //allows the widget to occupy more than one column
         disableOneColumnMode: true,
         //false allows widget dragging, true denies it
-        staticGrid: false,
+        staticGrid: hasShips,
         //activates animations
         animate: true
     }
@@ -156,24 +195,33 @@ const loadGrid = function () {
     grid = $('#grid').data('gridstack');
 
     //adding the ships already created in the back-end
-    for(i=0;i<gameView.ships.length;i++){
-        let shipType = gameView.ships[i].type; //type
-        let x = +(gameView.ships[i].location[0].slice(1)) - 1; //number
-        let y = gameView.ships[i].location[0].slice(0,1).toUpperCase().charCodeAt(0)-65; //letter
-        let w; //width
-        let h; //height
 
-        if(gameView.ships[i].location[0].slice(0,1) == gameView.ships[i].location[1].slice(0,1)){
-            w = gameView.ships[i].location.length;
-            h = 1;
-            grid.addWidget($('<div id="'+shipType+'"><div class="grid-stack-item-content '+shipType+'Horizontal"></div><div/>'), x, y, w, h);
-            //check that the shipType is written in camel case in the back-end Salvo Application
-        } else{
-            h = gameView.ships[i].location.length;
-            w = 1;
-            grid.addWidget($('<div id="'+shipType+'"><div class="grid-stack-item-content '+shipType+'Vertical"></div><div/>'), x, y, w, h);
-            //check that the shipType is written in camel case in the back-end Salvo Application
+    if(hasShips){
+        for(i=0;i<gameView.ships.length;i++){
+            let shipType = gameView.ships[i].type; //type
+            let x = +(gameView.ships[i].location[0].slice(1)) - 1; //number
+            let y = gameView.ships[i].location[0].slice(0,1).toUpperCase().charCodeAt(0)-65; //letter
+            let w; //width
+            let h; //height
+
+            if(gameView.ships[i].location[0].slice(0,1) == gameView.ships[i].location[1].slice(0,1)){
+                w = gameView.ships[i].location.length;
+                h = 1;
+                grid.addWidget($('<div id="'+shipType+'"><div class="grid-stack-item-content '+shipType+'Horizontal"></div><div/>'), x, y, w, h);
+                //check that the shipType is written in camel case in the back-end Salvo Application
+            } else{
+                h = gameView.ships[i].location.length;
+                w = 1;
+                grid.addWidget($('<div id="'+shipType+'"><div class="grid-stack-item-content '+shipType+'Vertical"></div><div/>'), x, y, w, h);
+                //check that the shipType is written in camel case in the back-end Salvo Application
+            }
         }
+    } else{
+        grid.addWidget($('<div id="carrier"><div class="grid-stack-item-content carrierHorizontal"></div><div/>'), 0, 0, 5, 1);
+        grid.addWidget($('<div id="battleship"><div class="grid-stack-item-content battleshipHorizontal"></div><div/>'), 0, 1, 4, 1);
+        grid.addWidget($('<div id="submarine"><div class="grid-stack-item-content submarineHorizontal"></div><div/>'), 0, 2, 3, 1);
+        grid.addWidget($('<div id="destroyer"><div class="grid-stack-item-content destroyerHorizontal"></div><div/>'), 0, 3, 3, 1);
+        grid.addWidget($('<div id="patrolBoat"><div class="grid-stack-item-content patrolBoatHorizontal"></div><div/>'), 0, 4, 2, 1);
     }
 
 

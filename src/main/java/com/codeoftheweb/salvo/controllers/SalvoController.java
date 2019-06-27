@@ -78,7 +78,6 @@ public class SalvoController {
 
     /*GAMES POST METHOD: CREATE GAME*/
     @RequestMapping(path = "/games", method = RequestMethod.POST)
-    @ResponseBody
     public ResponseEntity<Object> createGame(Authentication authentication) {
         ResponseEntity<Object> responseEntity;
 
@@ -123,7 +122,6 @@ public class SalvoController {
 
     /*GAME VIEW POST METHOD: JOIN GAME*/
     @RequestMapping(path = "/game/{gameId}/players", method = RequestMethod.POST)
-    @ResponseBody
     public ResponseEntity<Object> joinGame(Authentication authentication, @PathVariable long gameId) {
         ResponseEntity<Object> responseEntity;
 
@@ -152,7 +150,7 @@ public class SalvoController {
 
     /*---------------------------SHIPS---------------------------------*/
     @RequestMapping(path ="/games/players/{gamePlayerId}/ships")
-    public ResponseEntity<Object> shipsList(@PathVariable long gamePlayerId, Authentication authentication, @RequestBody List<Ship> shipsList) {
+    public ResponseEntity<Object> addShips(@PathVariable long gamePlayerId, Authentication authentication, @RequestBody List<Ship> shipsList) {
         ResponseEntity<Object> responseEntity;
 
         if(isGuest(authentication)){
@@ -168,9 +166,12 @@ public class SalvoController {
             responseEntity = new ResponseEntity<>(makeMap("error","The current user is not the gamePlayer the ID references"), HttpStatus.UNAUTHORIZED);
         }
 
-
         if(gamePlayer.getShips().size() > 0){
             responseEntity = new ResponseEntity<>(makeMap("error","There are already ships."), HttpStatus.FORBIDDEN);
+
+        }else if(shipsList.size() != 5){
+            responseEntity = new ResponseEntity<>(makeMap("error","You need to have 5 ships"),HttpStatus.FORBIDDEN);
+
         }else{
             shipsList.forEach(ship -> gamePlayer.addShip(ship));
             gamePlayerRepo.save(gamePlayer);
@@ -179,7 +180,6 @@ public class SalvoController {
 
         return responseEntity;
     }
-
 
 
     /*---------------------------OTHER METHODS---------------------------------*/
