@@ -3,9 +3,11 @@ package com.codeoftheweb.salvo.models;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 //JPA annotations
 @Entity  //tells Spring to create a salvo table for this class.
@@ -82,8 +84,31 @@ public class Salvo {
         dto.put("turn",this.getTurn());
         dto.put("locations", this.getLocations());
         dto.put("player", this.getGamePlayer().getPlayer().getId());
+        dto.put("hits", this.getHits());
         return dto;
     }
+
+
+
+    /*other methods*/
+
+    private List<String> getHits(){
+        GamePlayer opponent = this.getGamePlayer().getGame().getGamePlayers()
+                .stream()
+                .filter(gamePlayer -> gamePlayer.getId() != this.getGamePlayer().getId())
+                .findFirst().orElse(null);
+
+        List<String> hits = new ArrayList<>();
+        if(opponent != null){
+           hits = this.getLocations().stream()
+                   .filter(loc -> opponent.getShips().stream()
+                           .anyMatch(ship -> ship.getLocations().contains(loc)))
+                   .collect(Collectors.toList());
+        }
+        return hits;
+    }
+
+
 
 
 

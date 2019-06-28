@@ -1,9 +1,6 @@
 package com.codeoftheweb.salvo.controllers;
 
-import com.codeoftheweb.salvo.models.Game;
-import com.codeoftheweb.salvo.models.GamePlayer;
-import com.codeoftheweb.salvo.models.Player;
-import com.codeoftheweb.salvo.models.Ship;
+import com.codeoftheweb.salvo.models.*;
 import com.codeoftheweb.salvo.repositories.GamePlayerRepository;
 import com.codeoftheweb.salvo.repositories.GameRepository;
 
@@ -156,11 +153,12 @@ public class SalvoController {
         if(isGuest(authentication)){
             responseEntity = new ResponseEntity<>(makeMap("error", "Not logged in."), HttpStatus.UNAUTHORIZED);
         }
-        if (gamePlayerRepo.findById(gamePlayerId) == null) {
+
+        GamePlayer gamePlayer = gamePlayerRepo.findById(gamePlayerId);
+        if (gamePlayer == null) {
             responseEntity = new ResponseEntity<>(makeMap("error","There's no gamePlayer with that id."), HttpStatus.UNAUTHORIZED);
         }
 
-        GamePlayer gamePlayer = gamePlayerRepo.findById(gamePlayerId);
         Player currentPlayer = playerRepo.findByUsername(authentication.getName());
         if(gamePlayer.getPlayer().getId() != currentPlayer.getId()) {
             responseEntity = new ResponseEntity<>(makeMap("error","The current user is not the gamePlayer the ID references"), HttpStatus.UNAUTHORIZED);
@@ -179,6 +177,35 @@ public class SalvoController {
         }
 
         return responseEntity;
+    }
+
+    /*---------------------------SALVOES---------------------------------*/
+
+    @RequestMapping(path ="/games/players/{gamePlayerId}/salvoes")
+    public ResponseEntity<Object> addSalvoes(@PathVariable long gamePlayerId, Authentication authentication, @RequestBody List<String> shots) {
+        ResponseEntity<Object> responseEntity;
+
+        GamePlayer gamePlayer = gamePlayerRepo.findById(gamePlayerId); //yo sobreescribí el metodo findById() que te proporciona el JPA por el mío propio en mi gamePlayerRepo. Si no hubiera puesto ese método, ya existe un findById() que te retorna un true o false. Entonces esta línea de código sería GamePlayer gamePlayer = gamePlayerRepo.findById(gamePlayerId).orElse(null);
+        if (gamePlayer == null) {
+            responseEntity = new ResponseEntity<>(makeMap("error","There's no gamePlayer with that id."), HttpStatus.UNAUTHORIZED);
+        }
+
+        Player currentPlayer = playerRepo.findByUsername(authentication.getName());
+        if(gamePlayer.getPlayer().getId() != currentPlayer.getId()) {
+            responseEntity = new ResponseEntity<>(makeMap("error","The current user is not the gamePlayer the ID references"), HttpStatus.UNAUTHORIZED);
+        }
+        if(shots.size() > 5) {
+            responseEntity = new ResponseEntity<>(makeMap("error", "You cannot throw more than 5 salvoes"), HttpStatus.FORBIDDEN);
+        }else{
+            int turn = gamePlayer.getSalvoes().size() +1;
+            Salvo newSalvo = new Salvo(shots, turn);
+
+            gamePlayer.addSalvo(newSalvo);
+            gamePlayerRepo.save(gamePlayer);
+            responseEntity = new ResponseEntity<>(makeMap("success", "Salvo created!"), HttpStatus.CREATED);
+        }
+        return responseEntity;
+
     }
 
 
