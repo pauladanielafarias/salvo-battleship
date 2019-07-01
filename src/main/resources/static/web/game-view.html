@@ -51,10 +51,12 @@
             <div class="w3-col s12 m12 l6 w3-padding">
                 <div>
                     <template v-if="ships.length == 0">
-                        <h3>Ships Grid <button onclick="addShips()" class="w3-button w3-small w3-border w3-margin">Add Ships</button></h3>
+                        <div id="add-ships">
+                            <h3>Ships Grid <button onclick="addShips()" class="w3-button w3-small w3-border w3-margin">Add Ships</button></h3>
+                        </div>
                     </template>
                     <template v-else>
-                            <h3>Ships Grid <p class="w3-button w3-small w3-border w3-margin">Ships Added</p></h3>
+                        <h3 id="ships-added">Ships Grid <span class="w3-padding w3-small w3-border w3-margin">Ships Added</span></h3> 
                     </template>
                 </div>
                 <div class="grid-ships">

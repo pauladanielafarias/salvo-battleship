@@ -32,6 +32,11 @@ body h3{
     height: 100vh;
 }
 
-#salvoes-grid-title{
-    margin: 29px;
+#salvoes-grid-title, #ships-added{
+    margin-bottom: 29px;
 }
+#add-ships h3{
+    margin:0;
+}
+
+

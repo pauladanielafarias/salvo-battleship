@@ -55,7 +55,7 @@ fetch("/api/game_view/"+ paramObj(location.search).gp, {mode:'no-cors'})
             }
 
             if(paramObj(location.search).newships!= undefined && paramObj(location.search).newships == 'true'){
-                swal({text:"You've entered the ships. Now wait for another player to join you!", icon:"success", button: {text:"Great!", className:"newships-button"}})
+                swal({text:"You've added the ships. Now wait for another player to join you!", icon:"success", button: {text:"Great!", className:"newships-button"}})
             }
         }
 
@@ -64,7 +64,9 @@ fetch("/api/game_view/"+ paramObj(location.search).gp, {mode:'no-cors'})
     //swal({text:"Invalid Username or Password", icon:"warning", button:{className:"fail-login-button"}});
 });
 }
-// adding the ships fetch 
+
+//-------------- SHIPS -------------------
+// add ships function that contains the fetch
 function addShips(){
 let dataShips = []
 
@@ -93,7 +95,7 @@ shipsList.forEach(function(ship){
 
     dataShips.push(obj)
 })
-
+//adding the ships fetch
  fetch("/api/games/players/" + paramObj(location.search).gp + "/ships",{
         method:'POST',
         body: JSON.stringify(dataShips),
@@ -110,23 +112,50 @@ shipsList.forEach(function(ship){
     })
 }
 
+//------------ SALVOES ------------------
+
+// add ships function that contains the fetch
+
+//NO HACE NADA AÚN
+function addSalvoes(){
+    let dataSalvoes= [];
+    document.querySelectorAll(".grid-salvoes .grid-cell").addEventListener("click",function myFunction() {
+        alert ("Hello World!");
+      } );
+
+     
+    //adding the salvoes fetch
+     fetch("/api/games/players/" + paramObj(location.search).gp + "/salvoes",{
+            method:'POST',
+            body: JSON.stringify(dataSalvoes),
+            headers: {'Content-Type': 'application/json'}
+        })
+        .then(function(response) {
+            return response.json()
+        })
+        .catch(function(error){
+            console.log(error)
+        })
+    }
 
 
 
-/*fetch
-let gameView=[];
 
-fetch("/api/game_view/"+ paramObj(location.search).gp, {mode:'no-cors'})
-.then(function(response) {
-    return response.json()
-}).then(function(json) {
-    gameView = json;
-    printPlayersUsername(); // calling the funtion that prints the game players username
-    loadGrid(); // loads grid when it loads the page
-    salvoes();// loads salvoes when it loads the page
-});*/
+//----------------- 
+// function that makes the symbols compatible on the url
+function paramObj(search) {
+    var obj = {};
+    var reg = /(?:[?&]([^?&#=]+)(?:=([^&#]*))?)(?:#.*)?/g;
+  
+    search.replace(reg, function(match, param, val) {
+      obj[decodeURIComponent(param)] = val === undefined ? "" : decodeURIComponent(val);
+    });
+  
+    return obj;
+}
 
 
+//--------------------- PLAYERS USERNAMES ---------------
 // printing game players usernames depending on the id
 function printPlayersUsername(){
     if(gameView.gamePlayers.length > 1){
@@ -147,18 +176,8 @@ function printPlayersUsername(){
     
 }
 
-// function that makes the symbols compatible on the url
-function paramObj(search) {
-    var obj = {};
-    var reg = /(?:[?&]([^?&#=]+)(?:=([^&#]*))?)(?:#.*)?/g;
-  
-    search.replace(reg, function(match, param, val) {
-      obj[decodeURIComponent(param)] = val === undefined ? "" : decodeURIComponent(val);
-    });
-  
-    return obj;
-}
 
+//--------------------------- GRIDS ---------------------
 /*SHIPS GRID*/
 
 //main function that shoots the gridstack.js framework and load the grid with the ships
@@ -192,8 +211,7 @@ const loadGrid = function (hasShips) {
 
     grid = $('#grid').data('gridstack');
 
-    //adding the ships already created in the back-end
-
+    //adding the ships
     if(hasShips){
         for(i=0;i<gameView.ships.length;i++){
             let shipType = gameView.ships[i].type; //type
@@ -286,6 +304,9 @@ const createGrid = function(size, element, id){
 
     element.append(wrapper)
 }
+
+
+//--------------------------- ROTATE SHIPS -----------------------
 
 //adds a listener to the ships, wich shoots its rotation when clicked
 const rotateShips = function(shipType, cells){
