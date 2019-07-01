@@ -45,26 +45,31 @@
         </div></br>
 
         <!--ROW 4: GRIDS-->
-        <div class="w3-row-padding"> 
-                <!--SHIP GRID-->
-                <div class="w3-col m12 l6 w3-padding">
-                    <div class="w3-container">
-                        <h3>Ships Grid</h3>
-                        <div class="grid-ships">
-                            <div id="grid" class="grid-stack grid-stack-10">  
-                        </div>
+        <div class="w3-row-padding">
+
+            <!--SHIP GRID-->
+            <div class="w3-col s12 m12 l6 w3-padding">
+                <div>
+                    <template v-if="ships.length == 0">
+                        <h3>Ships Grid <button onclick="addShips()" class="w3-button w3-small w3-border w3-margin">Add Ships</button></h3>
+                    </template>
+                    <template v-else>
+                            <h3>Ships Grid <p class="w3-button w3-small w3-border w3-margin">Ships Added</p></h3>
+                    </template>
+                </div>
+                <div class="grid-ships">
+                    <div id="grid" class="grid-stack grid-stack-10">  
                     </div>
                 </div>
             </div>  
 
             <!--SALVO GRID-->
-            <div class="w3-col m12 l6 w3-padding">
-                <div  class="w3-container">
-                    <h3>Salvoes Grid</h3>
-
-                    <div class="grid-salvoes">
-                        <div id="grid" class="grid-stack grid-stack-10">
-                        </div>
+            <div class="w3-col s12 m12 l6 w3-padding">
+                <div class="w3-margin-bottom">
+                    <h3 id="salvoes-grid-title">Salvoes Grid</h3>
+                </div>
+                <div class="grid-salvoes">
+                    <div id="grid" class="grid-stack grid-stack-10">
                     </div>
                 </div>
             </div>

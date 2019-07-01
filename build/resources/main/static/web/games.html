@@ -30,27 +30,41 @@
                         <form class="w3-center">
                             <label>Username: </br> <input type="email" name="username" required></label></br>
                             <label>Password: </br> <input type="password" name="password" required></label></br></br>
-                            <button onclick="login(event,false)">Log in</button>
+                            <button onclick="login(event,false)" 
+                            class="w3-btn w3-light-grey w3-border w3-round w3-hover-light-green">
+                                Log in
+                            </button>
                         </form></br>
                         <!--Register button -->
                         <div class="w3-center">
-                            <button onclick="document.getElementById('signup').style.display='block'">Register</button>
+                            <button onclick="document.getElementById('signup').style.display='block'" 
+                            class="w3-btn w3-light-grey w3-border w3-round w3-hover-light-blue">
+                                Register
+                            </button>
                         </div>
                     </div>
                     <!--Sign up Form -->
                     <div class="w3-container">
                         <div id="signup" class="w3-modal">
-                            <div class="w3-modal-content w3-card-4 w3-animate-zoom" style="max-width:600px">
-                                <div class="w3-center">
-                                    <span onclick="document.getElementById('signup').style.display='none'" class="w3-button w3-xlarge w3-hover-red w3-display-topright" title="Close Modal">&times;</span>
+                            <div class="w3-modal-content w3-card-4 w3-animate-zoom  w3-light-grey" style="max-width:600px;">
+                                <div class="w3-center w3-margin">
+                                    <span onclick="document.getElementById('signup').style.display='none'" 
+                                    class="w3-btn w3-xlarge w3-hover-red w3-display-topright" title="Close Modal">
+                                        &times; <!--&times; es la x para cerrar el modal-->
+                                    </span>
                                 </div>
-                                <form name="signupForm" class="w3-col s12 m12 l12 w3-center w3-container w3-margin">
+                                <form name="signupForm" class="w3-container w3-center w3-margin">
                                     <label>Email: </br> <input type="email" name="username" required></label></br>
                                     <label>Password: </br> <input type="password" name="password" required></label></br></br> 
-                                    <button onclick="signup(event)">Sign up</button> 
+                                    <button onclick="signup(event)" class="w3-btn w3-light-grey w3-border w3-round w3-margin">
+                                        Sign up
+                                    </button> 
                                 </form>
-                                <div class="w3-container w3-border-top w3-padding-16 w3-light-grey">
-                                        <button onclick="document.getElementById('signup').style.display='none'" type="button" class="w3-button w3-red">Cancel</button>
+                                <div class="w3-container w3-border-top w3-padding-16">
+                                    <button onclick="document.getElementById('signup').style.display='none'" type="button" 
+                                    class="w3-btn w3-pale-red w3-border w3-round">
+                                        Cancel
+                                    </button>
                                 </div>
                             </div>
                         </div>
@@ -75,7 +89,7 @@
                         <button onclick="logout(event)" class="w3-button w3-light-grey w3-border">Log out</button>
                         <!--Create game button -->
                         <template  v-if="currentPlayer != 'GUEST'">
-                                <a onclick="createGame(event)" class="w3-button w3-light-grey w3-border">Create New Game</a>
+                            <a onclick="createGame(event)" class="w3-button w3-light-grey w3-border">Create New Game</a>
                         </template>
                     </div>
                 </div>

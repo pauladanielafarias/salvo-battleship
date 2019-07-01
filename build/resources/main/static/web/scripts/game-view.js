@@ -3,10 +3,11 @@ var app = new Vue({
     el: '#app',
 //data in Vue.js
     data: {
-     usernameP1: "",
-     usernameP2: "",
-     currentPlayer: "",
-     ships: []    
+        usernameP1: "",
+        usernameP2: "",
+        currentPlayer: "",
+        ships: [] ,
+        
      
     }       
 
@@ -33,6 +34,7 @@ fetch("/api/game_view/"+ paramObj(location.search).gp, {mode:'no-cors'})
             document.getElementById('error').classList.remove('show')
             document.getElementById('app').style.display = 'block'
             gameView = json;
+            app.ships = json.ships;
 
 
             printPlayersUsername(); // calling the funtion that prints the game players username
@@ -90,7 +92,6 @@ shipsList.forEach(function(ship){
     obj.shipType = type;
 
     dataShips.push(obj)
-
 })
 
  fetch("/api/games/players/" + paramObj(location.search).gp + "/ships",{
@@ -164,9 +165,6 @@ function paramObj(search) {
 const loadGrid = function (hasShips) {
 
     document.getElementById("grid").innerHTML = ""
-
-   
-
     var options = { 
         //10 x 10 grid
         width: 10,
@@ -227,11 +225,14 @@ const loadGrid = function (hasShips) {
 
     createGrid(11, $(".grid-ships"), 'ships')
 
-    rotateShips("carrier", 5)
-    rotateShips("battleship", 4)
-    rotateShips("submarine",3)
-    rotateShips("destroyer", 3)
-    rotateShips("patrolBoat",2)
+    if(!hasShips){
+        rotateShips("carrier", 5)
+        rotateShips("battleship", 4)
+        rotateShips("submarine",3)
+        rotateShips("destroyer", 3)
+        rotateShips("patrolBoat",2)
+    }
+    
 
     listenBusyCells('ships')
     $('.grid-stack').on('change', function(){listenBusyCells('ships')})
