@@ -32,11 +32,14 @@ body h3{
     height: 100vh;
 }
 
-#salvoes-grid-title, #ships-added{
-    margin-bottom: 29px;
+#ships-added:hover{
+    display: none,
 }
-#add-ships h3{
-    margin:0;
+
+.salvoes-img{
+    background-image: url('../images/paw\ salvo.png');
+    background-size: contain;
 }
+
 
 

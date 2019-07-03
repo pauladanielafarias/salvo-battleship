@@ -45,7 +45,7 @@ fetch("/api/game_view/"+ paramObj(location.search).gp, {mode:'no-cors'})
             }
 
             salvoes();// loads salvoes when it loads the page
-
+            addSalvoes()
             if(paramObj(location.search).newgame != undefined && paramObj(location.search).newgame == 'true'){
                 swal({text:"Hey " + app.currentPlayer +", you've created a new game! Have fun!", icon:"success", button: {text:"Great", className:"createdGame-button"}})
             
@@ -57,6 +57,9 @@ fetch("/api/game_view/"+ paramObj(location.search).gp, {mode:'no-cors'})
             if(paramObj(location.search).newships!= undefined && paramObj(location.search).newships == 'true'){
                 swal({text:"You've added the ships. Now wait for another player to join you!", icon:"success", button: {text:"Great!", className:"newships-button"}})
             }
+            if(paramObj(location.search).newsalvoes!= undefined && paramObj(location.search).newsalvoes == 'true'){
+                swal({text:"You've shot a paw! Now wait for the other player to fire back.", icon:"success", button: {text:"Great!", className:"newships-button"}})
+            }
         }
 
 }).catch(function(error){
@@ -66,7 +69,7 @@ fetch("/api/game_view/"+ paramObj(location.search).gp, {mode:'no-cors'})
 }
 
 //-------------- SHIPS -------------------
-// add ships function that contains the fetch
+// add ships function that contains the fetch(post)
 function addShips(){
 let dataShips = []
 
@@ -95,7 +98,7 @@ shipsList.forEach(function(ship){
 
     dataShips.push(obj)
 })
-//adding the ships fetch
+//adding the ships fetch (post)
  fetch("/api/games/players/" + paramObj(location.search).gp + "/ships",{
         method:'POST',
         body: JSON.stringify(dataShips),
@@ -114,17 +117,36 @@ shipsList.forEach(function(ship){
 
 //------------ SALVOES ------------------
 
-// add ships function that contains the fetch
-
-//NO HACE NADA AÚN
+// add salvoes function that contains the fetch(post)
 function addSalvoes(){
     let dataSalvoes= [];
-    document.querySelectorAll(".grid-salvoes .grid-cell").addEventListener("click",function myFunction() {
-        alert ("Hello World!");
-      } );
+    let salvoesCells = document.querySelectorAll(".grid-salvoes .grid-cell");
+    
+    //add salvo's img when you click on one cell
+    for(i=0; i<salvoesCells.length; i++){
+        salvoesCells[i].addEventListener("click", function(){
+            addSalvoImg(event);
+        })    
+    }
+    //adding and removing salvo's img
+    function addSalvoImg(evt){
+        let cell = evt.target;
+        if(cell.classList.contains("salvoes-img")){
+            cell.classList.remove('salvoes-img');
+        } else{
+            cell.classList.add('salvoes-img');
+        }
+    }
+    //posting the salvos to the back-end
+        for(i=0; i<salvoesCells.length; i++){
+            if(salvoesCells[i].classList.contains("salvoes-img")){
+                dataSalvoes.push();
+            }
+        }
+        
+    
 
-     
-    //adding the salvoes fetch
+    //adding the salvoes fetch(post)
      fetch("/api/games/players/" + paramObj(location.search).gp + "/salvoes",{
             method:'POST',
             body: JSON.stringify(dataSalvoes),
@@ -133,10 +155,14 @@ function addSalvoes(){
         .then(function(response) {
             return response.json()
         })
+        .then(function(json) {
+            console.log(json)
+          // window.location.replace("game-view.html?gp="+paramObj(location.search).gp+"&newgame=false&join=false&newsalvoes=true")
+        })
         .catch(function(error){
             console.log(error)
         })
-    }
+ }
 
 
 

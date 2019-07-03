@@ -49,19 +49,20 @@
 
             <!--SHIP GRID-->
             <div class="w3-col s12 m12 l6 w3-padding">
-                <div>
-                    <template v-if="ships.length == 0">
-                        <div id="add-ships">
-                            <h3>Ships Grid <button onclick="addShips()" class="w3-button w3-small w3-border w3-margin">Add Ships</button></h3>
-                        </div>
-                    </template>
-                    <template v-else>
-                        <h3 id="ships-added">Ships Grid <span class="w3-padding w3-small w3-border w3-margin">Ships Added</span></h3> 
-                    </template>
-                </div>
+                <h3>Ships Grid</h3>
                 <div class="grid-ships">
                     <div id="grid" class="grid-stack grid-stack-10">  
                     </div>
+                </div>
+                <div>
+                    <template v-if="ships.length == 0">
+                        <div id="add-ships">
+                            <button onclick="addShips()" class="w3-button w3-small w3-border w3-margin">Add Ships</button>
+                        </div>
+                    </template>
+                    <template v-else>
+                        <span id="ships-added" class="w3-btn w3-padding w3-small w3-border w3-margin">Ships Added</span> 
+                    </template>
                 </div>
             </div>  
 
@@ -73,6 +74,12 @@
                 <div class="grid-salvoes">
                     <div id="grid" class="grid-stack grid-stack-10">
                     </div>
+                </div>
+                <div>
+                    <template>
+                        <button onclick="addSalvoes()" class="w3-btn w3-small w3-border w3-margin-top"> Add Salvoes</button>
+                    </template>  
+
                 </div>
             </div>
         </div>
