@@ -6,7 +6,10 @@ var app = new Vue({
         usernameP1: "",
         usernameP2: "",
         currentPlayer: "",
+        currentPlayerId: "",
         ships: [] ,
+        salvoes: [],
+        dataSalvoes: [],
         
      
     }       
@@ -22,58 +25,63 @@ fetch("/api/game_view/"+ paramObj(location.search).gp, {mode:'no-cors'})
     return response.json()
     
 }).then(function(json) {
-    //there's a 403 error so the grid won't be display and the error 403 image will be displayed
+    //if there's a 403 error so the grid won't be display and the error 403 image will be displayed
     if(json.error != undefined){
         console.log(json.error)
         document.getElementById('error').classList.add('show')
         document.getElementById('app').style.display = 'none'
 
-        //there's no error 403 so the grid will display 
+        
     } else{   
+        // if there's no error 403 so the grid will display 
+        document.getElementById('error').classList.remove('show')
+        document.getElementById('app').style.display = 'block'
+        
+        //saving the json in the variable gameView
+        gameView = json;
+        //saving the ships from the json in vue.js
+        app.ships = json.ships;
+      
 
-            document.getElementById('error').classList.remove('show')
-            document.getElementById('app').style.display = 'block'
-            gameView = json;
-            app.ships = json.ships;
+        // calling the funtion that prints the game players username
+        printPlayersUsername(); 
 
-
-            printPlayersUsername(); // calling the funtion that prints the game players username
-            if(gameView.ships.length == 0){
-                loadGrid(false); // loads grid. when there are still ships missing the grid is not static
-            }else{
-                loadGrid(true); // loads grid. when there are no ships missing the grid is static
-            }
-
-            salvoes();// loads salvoes when it loads the page
-            addSalvoes()
-            if(paramObj(location.search).newgame != undefined && paramObj(location.search).newgame == 'true'){
-                swal({text:"Hey " + app.currentPlayer +", you've created a new game! Have fun!", icon:"success", button: {text:"Great", className:"createdGame-button"}})
-            
-            }
-            if(paramObj(location.search).join != undefined && paramObj(location.search).join == 'true'){
-                swal({text:"Hey " + app.currentPlayer + ", you've joined a new game. Have fun!", icon:"success", button: {text:"Thanks", className:"join-button"}})
-            }
-
-            if(paramObj(location.search).newships!= undefined && paramObj(location.search).newships == 'true'){
-                swal({text:"You've added the ships. Now wait for another player to join you!", icon:"success", button: {text:"Great!", className:"newships-button"}})
-            }
-            if(paramObj(location.search).newsalvoes!= undefined && paramObj(location.search).newsalvoes == 'true'){
-                swal({text:"You've shot a paw! Now wait for the other player to fire back.", icon:"success", button: {text:"Great!", className:"newships-button"}})
-            }
+         if(gameView.ships.length == 0){
+            loadGrid(false); // loads grid. when there are still ships missing the grid is not static
+        }else{
+            loadGrid(true); // loads grid. when there are no ships missing the grid is static
         }
 
+        // loads salvoes when it loads the page
+        salvoes();
+        addSalvoes();
+        //changing the url so that the differents alerts can be shown on the correct part of the game
+        if(paramObj(location.search).newgame != undefined && paramObj(location.search).newgame == 'true'){
+            swal({text:"Hey " + app.currentPlayer +", you've created a new game! Have fun!", icon:"success", button: {text:"Great", className:"createdGame-button"}})
+        }
+        if(paramObj(location.search).join != undefined && paramObj(location.search).join == 'true'){
+            swal({text:"Hey " + app.currentPlayer + ", you've joined a new game. Have fun!", icon:"success", button: {text:"Thanks", className:"join-button"}})
+        }
+        if(paramObj(location.search).newships!= undefined && paramObj(location.search).newships == 'true'){
+            swal({text:"You've added the ships. Now wait for another player to join you!", icon:"success", button: {text:"Great!", className:"newships-button"}})
+        }
+        if(paramObj(location.search).newsalvoes!= undefined && paramObj(location.search).newsalvoes == 'true'){
+            swal({text:"You've shot a paw! Now wait for the other player to fire back.", icon:"success", button: {text:"Great!", className:"newships-button"}})
+        }
+    }
 }).catch(function(error){
     console.log(error.error)
     //swal({text:"Invalid Username or Password", icon:"warning", button:{className:"fail-login-button"}});
 });
 }
 
+
 //-------------- SHIPS -------------------
 // add ships function that contains the fetch(post)
 function addShips(){
 let dataShips = []
-
 let shipsList = document.querySelectorAll(".grid-stack-item");
+
 shipsList.forEach(function(ship){
     let x = +(ship.dataset.gsX);
     let y = +(ship.dataset.gsY);
@@ -107,9 +115,9 @@ shipsList.forEach(function(ship){
     })
     .then(function(response) {
         return response.json()
-    }).then(function(json) {
+    }).done(function(json) {
         console.log(json)
-       window.location.replace("game-view.html?gp="+paramObj(location.search).gp+"&newgame=false&join=false&newships=true")
+        window.location.replace("game-view.html?gp="+paramObj(location.search).gp+"&newgame=false&join=false&newships=true")
     }).catch(function(error){
         console.log(error)
     })
@@ -117,9 +125,9 @@ shipsList.forEach(function(ship){
 
 //------------ SALVOES ------------------
 
-// add salvoes function that contains the fetch(post)
+// add salvoes function that 
 function addSalvoes(){
-    let dataSalvoes= [];
+ 
     let salvoesCells = document.querySelectorAll(".grid-salvoes .grid-cell");
     
     //add salvo's img when you click on one cell
@@ -137,35 +145,51 @@ function addSalvoes(){
             cell.classList.add('salvoes-img');
         }
     }
-    //posting the salvos to the back-end
-        for(i=0; i<salvoesCells.length; i++){
-            if(salvoesCells[i].classList.contains("salvoes-img")){
-                dataSalvoes.push();
-            }
-        }
-        
-    
 
-    //adding the salvoes fetch(post)
-     fetch("/api/games/players/" + paramObj(location.search).gp + "/salvoes",{
-            method:'POST',
-            body: JSON.stringify(dataSalvoes),
-            headers: {'Content-Type': 'application/json'}
-        })
-        .then(function(response) {
-            return response.json()
-        })
-        .then(function(json) {
-            console.log(json)
-          // window.location.replace("game-view.html?gp="+paramObj(location.search).gp+"&newgame=false&join=false&newsalvoes=true")
-        })
-        .catch(function(error){
-            console.log(error)
-        })
  }
 
+ //adding the salvoes fetch(post)
+ function postSalvoes(){
 
+    let salvoesPaws = document.querySelectorAll(".grid-salvoes .grid-cell.salvoes-img");
+    //posting the salvos to the back-end
+    salvoesPaws.forEach(function(paw){
+        let y = paw.dataset.y; // letter
+        let x = +(paw.dataset.x); // number
 
+        let location = y+x;
+        app.dataSalvoes.push(location);  
+    })
+
+    fetch("/api/games/players/" + paramObj(location.search).gp + "/salvoes",{
+        method:'POST',
+        body: JSON.stringify(app.dataSalvoes),
+        headers: {'Content-Type': 'application/json'}
+    })
+    .then(function(response) {
+        return response.json()
+    })
+    .then(function(json) {
+        gameViewRefresh()
+        console.log(json)
+    })
+    .catch(function(error){
+        console.log(error)
+    })
+ }
+
+ function gameViewRefresh(){
+    fetch("/api/game_view/"+ paramObj(location.search).gp, {mode:'no-cors'})
+    .then(function(response) {
+        return response.json()
+    })
+    .then(function(json){
+        gameView = json;
+    })
+    .then(function(){
+        salvoes()
+    })
+ }
 
 //----------------- 
 // function that makes the symbols compatible on the url
@@ -298,8 +322,6 @@ const createGrid = function(size, element, id){
     let wrapper = document.createElement('DIV')
     wrapper.id = id+"wrapper"
 
-    
-
     wrapper.classList.add('grid-wrapper')
 
     for(let i = 0; i < size; i++){
@@ -313,6 +335,8 @@ const createGrid = function(size, element, id){
             cell.classList.add('grid-cell')
             if(i > 0 && j > 0)
             cell.id = id+`${i - 1}${ j - 1}`
+            cell.dataset.y = String.fromCharCode(i - 1 + 65)
+            cell.dataset.x = j
 
             if(j===0 && i > 0){
                 let textNode = document.createElement('SPAN')
@@ -327,7 +351,6 @@ const createGrid = function(size, element, id){
             row.appendChild(cell)
         }
     }
-
     element.append(wrapper)
 }
 
@@ -390,6 +413,7 @@ createGrid(11, $(".grid-salvoes"), 'salvoes')
 
   //adding the salvoes already created in the back-end
   function salvoes(){
+    app.currentPlayerId = gameView.salvoes[i].player;
     for(i=0;i<gameView.salvoes.length;i++){
         for(j=0; j<gameView.salvoes[i].locations.length;j++){
             let turn = gameView.salvoes[i].turn; //turn
@@ -397,14 +421,14 @@ createGrid(11, $(".grid-salvoes"), 'salvoes')
             let x = +(gameView.salvoes[i].locations[j][1])-1; //number
             let y = gameView.salvoes[i].locations[j][0].slice(0,1).toUpperCase().charCodeAt(0)-65; //letter
             
-            if(player == app.currentPlayer){
+            if(player == app.currentPlayerId){
                 document.getElementById("salvoes"+y+x).classList.add("salvo");
                 document.getElementById("salvoes"+y+x).innerHTML="Turn " + turn;
                 
             }else{
-                if( document.querySelector("#ships"+y+x).className.indexOf("busy-cell") != -1){
-                    document.getElementById("ships"+y+x).classList.add("salvo");
-                    document.getElementById("ships"+y+x).innerHTML="Turn " + turn;
+                if( document.querySelector("#salvoes"+y+x).className.indexOf("busy-cell") != -1){
+                    document.getElementById("salvoes"+y+x).classList.add("salvo");
+                    document.getElementById("salvoes"+y+x).innerHTML="Turn " + turn;
                 }
             }
         }
