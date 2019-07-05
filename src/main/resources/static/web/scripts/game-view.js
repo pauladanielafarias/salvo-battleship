@@ -8,7 +8,6 @@ var app = new Vue({
         currentPlayer: "",
         currentPlayerId: "",
         ships: [] ,
-        salvoes: [],
         dataSalvoes: [],
         
      
@@ -30,7 +29,6 @@ fetch("/api/game_view/"+ paramObj(location.search).gp, {mode:'no-cors'})
         console.log(json.error)
         document.getElementById('error').classList.add('show')
         document.getElementById('app').style.display = 'none'
-
         
     } else{   
         // if there's no error 403 so the grid will display 
@@ -150,7 +148,7 @@ function addSalvoes(){
 
  //adding the salvoes fetch(post)
  function postSalvoes(){
-
+    app.dataSalvoes = []
     let salvoesPaws = document.querySelectorAll(".grid-salvoes .grid-cell.salvoes-img");
     //posting the salvos to the back-end
     salvoesPaws.forEach(function(paw){
@@ -167,14 +165,23 @@ function addSalvoes(){
         headers: {'Content-Type': 'application/json'}
     })
     .then(function(response) {
-        return response.json()
+        if(response.ok){
+            return response.json()
+        }else{
+            return Promise.reject(response.json())
+        }     
     })
     .then(function(json) {
         gameViewRefresh()
         console.log(json)
     })
     .catch(function(error){
-        console.log(error)
+        return error
+    }).then(function(jsonError){
+        if(jsonError != undefined){
+            console.log(jsonError)
+            swal({text:jsonError.error, button: {text:"Ok", className:"paws-button"}})
+        }
     })
  }
 
@@ -336,7 +343,7 @@ const createGrid = function(size, element, id){
             if(i > 0 && j > 0)
             cell.id = id+`${i - 1}${ j - 1}`
             cell.dataset.y = String.fromCharCode(i - 1 + 65)
-            cell.dataset.x = j
+            cell.dataset.x = j-1
 
             if(j===0 && i > 0){
                 let textNode = document.createElement('SPAN')
@@ -413,16 +420,17 @@ createGrid(11, $(".grid-salvoes"), 'salvoes')
 
   //adding the salvoes already created in the back-end
   function salvoes(){
-    app.currentPlayerId = gameView.salvoes[i].player;
     for(i=0;i<gameView.salvoes.length;i++){
+        app.currentPlayerId = gameView.salvoes[i].player;
         for(j=0; j<gameView.salvoes[i].locations.length;j++){
             let turn = gameView.salvoes[i].turn; //turn
             let player = gameView.salvoes[i].player;
-            let x = +(gameView.salvoes[i].locations[j][1])-1; //number
+            let x = +(gameView.salvoes[i].locations[j][1]); //number
             let y = gameView.salvoes[i].locations[j][0].slice(0,1).toUpperCase().charCodeAt(0)-65; //letter
             
             if(player == app.currentPlayerId){
                 document.getElementById("salvoes"+y+x).classList.add("salvo");
+                document.getElementById("salvoes"+y+x).classList.remove("salvoes-img");
                 document.getElementById("salvoes"+y+x).innerHTML="Turn " + turn;
                 
             }else{

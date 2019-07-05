@@ -104,14 +104,14 @@ public class SalvoController {
         ResponseEntity<Map<String, Object>> responseEntity;
 
         if (gamePlayerRepo.findById(gamePlayerId) == null) {
-            responseEntity = new ResponseEntity<>(makeMap("Error", "There's no gamePlayer with that id."), HttpStatus.FORBIDDEN);
+            responseEntity = new ResponseEntity<>(makeMap("error", "There's no gamePlayer with that id."), HttpStatus.FORBIDDEN);
         }else{
             GamePlayer gamePlayer = gamePlayerRepo.findById(gamePlayerId);
             Player player = playerRepo.findByUsername(authentication.getName());
             if(gamePlayer.getPlayer().getId() == player.getId()){
                 responseEntity = new ResponseEntity<>(gamePlayer.gameViewDTO(), HttpStatus.OK);
             } else{
-                responseEntity = new ResponseEntity<>(makeMap("Error", "Not your game."), HttpStatus.FORBIDDEN);
+                responseEntity = new ResponseEntity<>(makeMap("error", "Not your game."), HttpStatus.FORBIDDEN);
             }
         }
         return responseEntity;
@@ -194,9 +194,11 @@ public class SalvoController {
         if(gamePlayer.getPlayer().getId() != currentPlayer.getId()) {
             responseEntity = new ResponseEntity<>(makeMap("error","The current user is not the gamePlayer the ID references"), HttpStatus.UNAUTHORIZED);
         }
-        if(shots.size() > 5) {
-            responseEntity = new ResponseEntity<>(makeMap("error", "You cannot throw more than 5 salvoes"), HttpStatus.FORBIDDEN);
-        }else{
+        if(shots.size() > 5  )  {
+            responseEntity = new ResponseEntity<>(makeMap("error", "You cannot throw more than 5 paws"), HttpStatus.FORBIDDEN);
+        } else if(shots.size() == 0) {
+            responseEntity = new ResponseEntity<>(makeMap("error", "You have to throw at least one paw."), HttpStatus.FORBIDDEN);
+        } else{
             int turn = gamePlayer.getSalvoes().size() +1;
             Salvo newSalvo = new Salvo(shots, turn);
 
