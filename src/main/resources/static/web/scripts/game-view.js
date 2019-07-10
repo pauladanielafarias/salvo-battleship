@@ -123,7 +123,7 @@ shipsList.forEach(function(ship){
 
 //------------ SALVOES ------------------
 
-// add salvoes function that 
+// add salvoes function 
 function addSalvoes(){
  
     let salvoesCells = document.querySelectorAll(".grid-salvoes .grid-cell");
@@ -219,15 +219,18 @@ function printPlayersUsername(){
         if(gameView.gamePlayers[0].id == paramObj(location.search).gp){
             app.usernameP1 = gameView.gamePlayers[0].player.email;
             app.currentPlayer = gameView.gamePlayers[0].player.email
+            app.currentPlayerId = gameView.gamePlayers[0].player.id
             app.usernameP2 = gameView.gamePlayers[1].player.email;
         }else{
             app.usernameP1 = gameView.gamePlayers[1].player.email;
             app.usernameP2 = gameView.gamePlayers[0].player.email;
             app.currentPlayer = gameView.gamePlayers[1].player.email
+            app.currentPlayerId = gameView.gamePlayers[1].player.id
         }
     } else{
         app.usernameP1 = gameView.gamePlayers[0].player.email;
             app.currentPlayer = gameView.gamePlayers[0].player.email
+            app.currentPlayerId = gameView.gamePlayers[0].player.id
             app.usernameP2 = "waiting..."
     }
     
@@ -343,7 +346,7 @@ const createGrid = function(size, element, id){
             if(i > 0 && j > 0)
             cell.id = id+`${i - 1}${ j - 1}`
             cell.dataset.y = String.fromCharCode(i - 1 + 65)
-            cell.dataset.x = j-1
+            cell.dataset.x = j
 
             if(j===0 && i > 0){
                 let textNode = document.createElement('SPAN')
@@ -421,11 +424,10 @@ createGrid(11, $(".grid-salvoes"), 'salvoes')
   //adding the salvoes already created in the back-end
   function salvoes(){
     for(i=0;i<gameView.salvoes.length;i++){
-        app.currentPlayerId = gameView.salvoes[i].player;
         for(j=0; j<gameView.salvoes[i].locations.length;j++){
             let turn = gameView.salvoes[i].turn; //turn
             let player = gameView.salvoes[i].player;
-            let x = +(gameView.salvoes[i].locations[j][1]); //number
+            let x = +(gameView.salvoes[i].locations[j][1]) - 1; //number
             let y = gameView.salvoes[i].locations[j][0].slice(0,1).toUpperCase().charCodeAt(0)-65; //letter
             
             if(player == app.currentPlayerId){
@@ -433,11 +435,9 @@ createGrid(11, $(".grid-salvoes"), 'salvoes')
                 document.getElementById("salvoes"+y+x).classList.remove("salvoes-img");
                 document.getElementById("salvoes"+y+x).innerHTML="Turn " + turn;
                 
-            }else{
-                if( document.querySelector("#salvoes"+y+x).className.indexOf("busy-cell") != -1){
-                    document.getElementById("salvoes"+y+x).classList.add("salvo");
-                    document.getElementById("salvoes"+y+x).innerHTML="Turn " + turn;
-                }
+            }else if( document.querySelector("#ships"+y+x).className.indexOf("busy-cell") != -1){
+                    document.getElementById("ships"+y+x).classList.add("salvo");
+                    document.getElementById("ships"+y+x).innerHTML="Turn " + turn;
             }
         }
     }

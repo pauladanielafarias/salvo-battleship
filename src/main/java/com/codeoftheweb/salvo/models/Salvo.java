@@ -100,7 +100,8 @@ public class Salvo {
 
         List<String> hits = new ArrayList<>();
         if(opponent != null){
-           hits = this.getLocations().stream()
+           hits = this.getLocations()
+                   .stream()
                    .filter(loc -> opponent.getShips().stream()
                            .anyMatch(ship -> ship.getLocations().contains(loc)))
                    .collect(Collectors.toList());
