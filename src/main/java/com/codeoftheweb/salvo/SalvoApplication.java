@@ -18,6 +18,7 @@ public class SalvoApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(SalvoApplication.class, args);
 	}
+
 	/*PASSWORD ENCODER */
 	@Bean
 	public PasswordEncoder passwordEncoder() {
@@ -273,18 +274,6 @@ public class SalvoApplication {
 			Score score7 = new Score(p2, g4, 0.5, LocalDateTime.now());
 			Score score8 = new Score(p1, g4, 0.5, LocalDateTime.now());
 
-			Score score9 = new Score(p4, g5, LocalDateTime.now());
-			Score score10 = new Score(p1, g5, LocalDateTime.now());
-
-			Score score11 = new Score(p3, g6, LocalDateTime.now());
-			Score score12 = new Score(g6, LocalDateTime.now());
-
-			Score score13 = new Score(g7, LocalDateTime.now());
-			Score score14 = new Score(g7, LocalDateTime.now());
-
-			Score score15 = new Score(p3, g8, LocalDateTime.now());
-			Score score16 = new Score(p4, g8, LocalDateTime.now());
-
 
 			/* saving the scores*/
 			scoreRepository.save(score1);
@@ -295,16 +284,12 @@ public class SalvoApplication {
 			scoreRepository.save(score6);
 			scoreRepository.save(score7);
 			scoreRepository.save(score8);
-			scoreRepository.save(score9);
-			scoreRepository.save(score10);
-			scoreRepository.save(score11);
-			scoreRepository.save(score12);
-			scoreRepository.save(score13);
-			scoreRepository.save(score14);
-			scoreRepository.save(score15);
-			scoreRepository.save(score16);
+
+			System.out.println(score1.getPoints());
+			System.out.println(p1.getFirstName());
+			System.out.println(p1.getScores());
 
 		};
-	}
 
+	}
 }

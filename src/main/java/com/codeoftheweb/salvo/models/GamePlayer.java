@@ -108,7 +108,7 @@ public class GamePlayer {
         dto.put("id", this.getId());
         dto.put("player", this.getPlayer().playersDTO());
         if( this.getPlayerScore() != null)
-            dto.put("score", this.getPlayerScore().getScore());
+            dto.put("score", this.getPlayerScore().getPoints());
         else
             dto.put("score", null);
         return dto;
@@ -141,7 +141,7 @@ public class GamePlayer {
 
     //getting the score of a game from a player
     public Score getPlayerScore(){
-        return player.getScore(game);
+        return this.player.getScore(this.game);
     }
 
 
