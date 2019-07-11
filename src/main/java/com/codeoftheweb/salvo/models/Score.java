@@ -75,7 +75,11 @@ public class Score {
         return points;
     }
 
+<<<<<<< HEAD
     public void setPoints(int points) {
+=======
+    public void setPoints(double points) {
+>>>>>>> 2b923df4b492940fed322f263d9a37e416b60e33
         this.points = points;
     }
 
