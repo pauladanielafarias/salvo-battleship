@@ -113,7 +113,7 @@ shipsList.forEach(function(ship){
     })
     .then(function(response) {
         return response.json()
-    }).done(function(json) {
+    }).then(function(json) {
         console.log(json)
         window.location.replace("game-view.html?gp="+paramObj(location.search).gp+"&newgame=false&join=false&newships=true")
     }).catch(function(error){
@@ -424,13 +424,26 @@ createGrid(11, $(".grid-salvoes"), 'salvoes')
   //adding the salvoes already created in the back-end
   function salvoes(){
     for(i=0;i<gameView.salvoes.length;i++){
+        for(j=0; j<gameView.salvoes[i].hits;j++){
+            let turn = gameView.salvoes[i].turn; //turn
+            let player = gameView.salvoes[i].player;
+            let x = +(gameView.salvoes[i].locations[j][1]) - 1; //number
+            let y = gameView.salvoes[i].locations[j][0].slice(0,1).toUpperCase().charCodeAt(0)-65; //letter
+
+            let hits = gameView.salvoes[i].hits;
+            if(player == app.currentPlayerId && hits != null ){
+                document.getElementById("salvoes"+y+x).classList.add("hit");
+                document.getElementById("salvoes"+y+x).classList.remove("salvoes-img");
+                document.getElementById("salvoes"+y+x).innerHTML="Turn " + turn;
+            }
+        }
         for(j=0; j<gameView.salvoes[i].locations.length;j++){
             let turn = gameView.salvoes[i].turn; //turn
             let player = gameView.salvoes[i].player;
             let x = +(gameView.salvoes[i].locations[j][1]) - 1; //number
             let y = gameView.salvoes[i].locations[j][0].slice(0,1).toUpperCase().charCodeAt(0)-65; //letter
             
-            if(player == app.currentPlayerId){
+            if(player == app.currentPlayerId && !document.getElementById("salvoes"+y+x).hasClass("hit")){
                 document.getElementById("salvoes"+y+x).classList.add("salvo");
                 document.getElementById("salvoes"+y+x).classList.remove("salvoes-img");
                 document.getElementById("salvoes"+y+x).innerHTML="Turn " + turn;

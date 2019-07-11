@@ -109,6 +109,28 @@ public class Salvo {
         return hits;
     }
 
+    private List<Map<String, Object>> getSinks(){
+        GamePlayer opponent = this.getGamePlayer().getGame().getGamePlayers()
+                .stream()
+                .filter(gamePlayer -> gamePlayer.getId() != this.getGamePlayer().getId())
+                .findFirst().orElse(null);
+
+        List<String> shots = new ArrayList<>();
+        getGamePlayer().getSalvoes().stream().filter(salvo -> salvo.getTurn() <=   this.getTurn()).forEach(salvo -> shots.addAll(getLocations()));
+
+        List <Map<String, Object>> sinks = new ArrayList<>();
+
+        if(opponent != null){
+            sinks = opponent.getShips()
+                    .stream()
+                    .filter(ship -> shots.containsAll(ship.getLocations()))
+                    .map(Ship::shipsDTO) //trae el shipsDTO de la clase Ship y mapea shots con shipsDTO
+                    .collect(Collectors.toList());
+        }
+        return sinks;
+    }
+
+
 
 
 

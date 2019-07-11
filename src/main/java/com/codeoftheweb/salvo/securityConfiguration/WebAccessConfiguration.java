@@ -33,6 +33,8 @@ class WebAccessConfiguration extends WebSecurityConfigurerAdapter {
 
         http.logout().logoutUrl("/api/logout");
 
+        //hablita los frames externos. spring los deniega si no está la siguiente linea
+        http.headers().frameOptions().sameOrigin();
 
         // turn off checking for CSRF tokens
         http.csrf().disable();
