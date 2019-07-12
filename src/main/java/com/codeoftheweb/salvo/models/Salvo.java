@@ -85,6 +85,7 @@ public class Salvo {
         dto.put("locations", this.getLocations());
         dto.put("player", this.getGamePlayer().getPlayer().getId());
         dto.put("hits", this.getHits());
+        dto.put("sinks", this.getSinks());
         return dto;
     }
 
