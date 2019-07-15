@@ -113,7 +113,7 @@ shipsList.forEach(function(ship){
     })
     .then(function(response) {
         return response.json()
-    }).done(function(json) {
+    }).then(function(json) {
         console.log(json)
         window.location.replace("game-view.html?gp="+paramObj(location.search).gp+"&newgame=false&join=false&newships=true")
     }).catch(function(error){
@@ -424,22 +424,77 @@ createGrid(11, $(".grid-salvoes"), 'salvoes')
   //adding the salvoes already created in the back-end
   function salvoes(){
     for(i=0;i<gameView.salvoes.length;i++){
-        for(j=0; j<gameView.salvoes[i].locations.length;j++){
+        let turn = gameView.salvoes[i].turn; //turn
+        let mySalvo = gameView.salvoes.filter(x => x.player == app.currentPlayerId)[i];
+        let enemySalvo = gameView.salvoes.filter(x => x.player != app.currentPlayerId)[i];
+        //iterate over the hits' array and gets the hits of the enemies salvoes and adds the class hit so that the hits are shown differently than the salvoes
+        if (mySalvo != null){
+            for (h = 0; mySalvo.locations.length; h++){
+                let x_2 = mySalvo.locations[h].slice(1) -1;
+                let y_2 = mySalvo.locations[h].slice(0,1).charCodeAt(0) - 65;
+                for(j=0; j<mySalvo.hits.length;j++){
+                    if(mySalvo.hits[j] != 0 ){
+                        let x = mySalvo.hits[j].slice(1) -1; //number
+                        let y = mySalvo.hits[j].slice(0,1).charCodeAt(0) - 65; //letter
+                        if (document.getElementById("salvoes"+y+x) == document.getElementById("salvoes"+y_2+x_2)){
+                        document.getElementById("salvoes"+y+x).classList.add("hit")
+                        document.getElementById("salvoes"+y+x).classList.remove("salvoes-img");
+                        document.getElementById("salvoes"+y+x).innerHTML="Turn " + turn;
+                    }else{
+                        document.getElementById("salvoes"+y+x).classList.add("salvo")
+                        document.getElementById("salvoes"+y+x).classList.remove("salvoes-img");
+                        document.getElementById("salvoes"+y+x).innerHTML="Turn " + turn;
+                    }
+                    }
+                }   
+        }
+    }
+
+    if (enemySalvo != null){
+
+        for(k=0; k<enemySalvo.hits.length;k++){
+        
+            if (enemySalvo.hits[k] != 0){
+                let x = enemySalvo.hits[k].slice(1) -1; //number
+                let y = enemySalvo.hits[k].slice(0,1).charCodeAt(0) - 65; //letter
+                document.getElementById("ships"+y+x).classList.add("salvo");
+                document.getElementById("ships"+y+x).classList.remove("salvoes-img");
+                document.getElementById("ships"+y+x).innerHTML="Turn " + turn;
+            }
+        }
+    }
+        //iterate over the sinks' array and gets the sinks of the enemies ships and adds the class sink so that the sinks are shown differently than the salvoes and hits
+            if(mySalvo.sinks.length != 0 ){
+                for(j=0; j<mySalvo.sinks.length;j++){
+                    for (k = 0; k < mySalvo.sinks[j].location.length; k++){
+                        let x = (gameView.salvoes[i].sinks[j].location[k].slice(1)) -1; //number
+                        let y = gameView.salvoes[i].sinks[j].location[k].slice(0,1).charCodeAt(0) - 65; //letter
+                        let turn = gameView.salvoes[i].turn; //turn
+                        
+                        document.getElementById("salvoes"+y+x).classList.remove("hit");
+                        document.getElementById("salvoes"+y+x).classList.remove("salvo");
+                        document.getElementById("salvoes"+y+x).classList.add("sink");
+                        document.getElementById("salvoes"+y+x).classList.remove("salvoes-img");
+                        document.getElementById("salvoes"+y+x).innerHTML="Turn " + turn;
+                    }
+                }
+            }  
+        
+   /*  for(j=0; j<mySalvo.locations.length;j++){
             let turn = gameView.salvoes[i].turn; //turn
-            let player = gameView.salvoes[i].player;
-            let x = +(gameView.salvoes[i].locations[j][1]) - 1; //number
-            let y = gameView.salvoes[i].locations[j][0].slice(0,1).toUpperCase().charCodeAt(0)-65; //letter
+            let x = (mySalvo.locations[j].slice(1)) -1; //number
+            let y = mySalvo.locations[j].slice(0,1).charCodeAt(0) - 65; //letter
             
-            if(player == app.currentPlayerId){
+            if(!document.getElementById("salvoes"+y+x).classList.contains("hit")){
                 document.getElementById("salvoes"+y+x).classList.add("salvo");
                 document.getElementById("salvoes"+y+x).classList.remove("salvoes-img");
                 document.getElementById("salvoes"+y+x).innerHTML="Turn " + turn;
                 
-            }else if( document.querySelector("#ships"+y+x).className.indexOf("busy-cell") != -1){
+            }else if(document.querySelector("#ships"+y+x).className.indexOf("busy-cell") != -1){
                     document.getElementById("ships"+y+x).classList.add("salvo");
                     document.getElementById("ships"+y+x).innerHTML="Turn " + turn;
             }
-        }
+     } */
     }
 }
 

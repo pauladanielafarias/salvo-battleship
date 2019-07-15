@@ -141,7 +141,7 @@ public class GamePlayer {
 
     //getting the score of a game from a player
     public Score getPlayerScore(){
-        return this.player.getScore(this.game);
+        return player.getScore(game);
     }
 
 

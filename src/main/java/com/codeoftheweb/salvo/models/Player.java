@@ -132,11 +132,8 @@ public class Player {
 
     //Gets the Score from an specific game
     public Score getScore(Game game){
-        return scores.stream()
-                .filter(score -> score.getGame().getId() == game.getId())
-                .findAny().orElse(null);
+        return scores.stream().filter(score -> score.getGame().getId() == game.getId()).findFirst().orElse(null);
     }
-
 
     // returns a list of the games a player is playing
     @JsonIgnore

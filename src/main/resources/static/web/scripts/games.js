@@ -54,12 +54,11 @@ function login(evt, newUser) {
             password: form["password"].value })
         .done(function(){ 
             getData().then(function(){
-                login(evt,true)
+                login(evt,true) 
             })
-            
         })
         .fail(function(){
-            swal({title:"The username already exists.", button:{text:"Back", className:"fail-signup-button"}}) 
+            swal({title:"The username already exists.", button:{text:"Back", className:"fail-signup-button"}})
         });
     }
   }
@@ -86,7 +85,7 @@ function createGame(evt) {
 // join game
 function joinGame(evt) {
     evt.preventDefault();
-    
+
     let gameId = evt.target.dataset.id
     $.post("/api/game/"+gameId+"/players")
     .done(function(response){ 
