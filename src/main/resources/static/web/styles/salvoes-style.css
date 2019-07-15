@@ -73,11 +73,11 @@
     text-align: center;
 }
 
-.hit {
+.salvo.hit {
     background-color: chartreuse;
 }
 
-.sink{
+.salvo.hit.sink{
     background-color: papayawhip;
 }
 

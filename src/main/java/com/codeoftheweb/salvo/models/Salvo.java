@@ -103,7 +103,8 @@ public class Salvo {
         if(opponent != null){
            hits = this.getLocations()
                    .stream()
-                   .filter(loc -> opponent.getShips().stream()
+                   .filter(loc -> opponent.getShips()
+                           .stream()
                            .anyMatch(ship -> ship.getLocations().contains(loc)))
                    .collect(Collectors.toList());
         }
@@ -117,7 +118,9 @@ public class Salvo {
                 .findFirst().orElse(null);
 
         List<String> shots = new ArrayList<>();
-        getGamePlayer().getSalvoes().stream().filter(salvo -> salvo.getTurn() <=   this.getTurn()).forEach(salvo -> shots.addAll(getLocations()));
+        this.getGamePlayer().getSalvoes()
+                .stream()
+                .filter(salvo -> salvo.getTurn() <= this.getTurn()).forEach(salvo -> shots.addAll(salvo.getLocations()));
 
         List <Map<String, Object>> sinks = new ArrayList<>();
 

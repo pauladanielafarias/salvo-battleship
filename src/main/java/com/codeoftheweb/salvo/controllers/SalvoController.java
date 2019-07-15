@@ -35,18 +35,18 @@ public class SalvoController {
 
     /*PLAYERS POST METHOD: REGISTER / SIGN UP*/
     @RequestMapping(path = "/players", method = RequestMethod.POST)
-    public ResponseEntity<Object> register(@RequestParam String username, @RequestParam String password) {
-                ResponseEntity<Object> responseEntity;
+    public  ResponseEntity<Map<String, Object>> register(@RequestParam String username, @RequestParam String password) {
 
-                if (username.isEmpty() || password.isEmpty()) {
-                    responseEntity = new ResponseEntity<>("Missing data (username or password empty)", HttpStatus.FORBIDDEN);
-                }else if (playerRepo.findByUsername(username) != null) {
-                    responseEntity = new ResponseEntity<>("Username already in use", HttpStatus.FORBIDDEN);
-                }else {
-                    playerRepo.save(new Player(username, passwordEncoder.encode(password)));
-                    responseEntity = new ResponseEntity<>(HttpStatus.CREATED);
-                }
-            return responseEntity;
+        ResponseEntity<Map<String, Object>> responseEntity;
+        if (username.isEmpty() || password.isEmpty()) {
+            responseEntity = new ResponseEntity<>(makeMap("error","Missing data (username or password empty)"), HttpStatus.FORBIDDEN);
+        }else if (playerRepo.findByUsername(username) != null) {
+            responseEntity = new ResponseEntity<>(makeMap("error","Username already in use"), HttpStatus.FORBIDDEN);
+        }else {
+            playerRepo.save(new Player(username, passwordEncoder.encode(password)));
+            responseEntity = new ResponseEntity<>(HttpStatus.CREATED);
+        }
+        return responseEntity;
     }
 
     /*---------------------------GAMES---------------------------------*/
@@ -75,11 +75,11 @@ public class SalvoController {
 
     /*GAMES POST METHOD: CREATE GAME*/
     @RequestMapping(path = "/games", method = RequestMethod.POST)
-    public ResponseEntity<Object> createGame(Authentication authentication) {
-        ResponseEntity<Object> responseEntity;
+    public  ResponseEntity<Map<String, Object>> createGame(Authentication authentication) {
+        ResponseEntity<Map<String, Object>> responseEntity;
 
         if (isGuest(authentication)) {
-            responseEntity = new ResponseEntity<>("Not logged in", HttpStatus.UNAUTHORIZED);
+            responseEntity = new ResponseEntity<>(makeMap("error","Not logged in"), HttpStatus.UNAUTHORIZED);
         }else {
             Game game =new Game(LocalDateTime.now());
             gameRepo.save(game);
@@ -119,23 +119,23 @@ public class SalvoController {
 
     /*GAME VIEW POST METHOD: JOIN GAME*/
     @RequestMapping(path = "/game/{gameId}/players", method = RequestMethod.POST)
-    public ResponseEntity<Object> joinGame(Authentication authentication, @PathVariable long gameId) {
-        ResponseEntity<Object> responseEntity;
+    public ResponseEntity<Map<String, Object>> joinGame(Authentication authentication, @PathVariable long gameId) {
+        ResponseEntity<Map<String, Object>> responseEntity;
 
         if (isGuest(authentication)) {
-            responseEntity = new ResponseEntity<>("Not logged in", HttpStatus.UNAUTHORIZED);
+            responseEntity = new ResponseEntity<>(makeMap("error","Not logged in"), HttpStatus.UNAUTHORIZED);
         }
         Game game = gameRepo.findById(gameId);
         if(game == null){
-            responseEntity = new ResponseEntity<>("No such game.", HttpStatus.FORBIDDEN);
+            responseEntity = new ResponseEntity<>(makeMap("error","No such game."), HttpStatus.FORBIDDEN);
         }
         if(game.getGamePlayers().size() != 1){
-            responseEntity = new ResponseEntity<>("This game is full.", HttpStatus.FORBIDDEN);
+            responseEntity = new ResponseEntity<>(makeMap("error","This game is full."), HttpStatus.FORBIDDEN);
         }
 
         Player currentPlayer = playerRepo.findByUsername(authentication.getName());
         if(game.getGamePlayers().stream().anyMatch(gamePlayer -> gamePlayer.getPlayer().getId() == currentPlayer.getId())){
-            responseEntity = new ResponseEntity<>("You are already playing this game.", HttpStatus.FORBIDDEN);
+            responseEntity = new ResponseEntity<>(makeMap("error","You are already playing this game."), HttpStatus.FORBIDDEN);
         }else{
             GamePlayer gamePlayer = new GamePlayer(LocalDateTime.now(), game ,currentPlayer);
             gamePlayerRepo.save(gamePlayer);
