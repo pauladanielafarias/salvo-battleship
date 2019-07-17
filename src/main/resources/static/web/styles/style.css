@@ -1,3 +1,4 @@
+/* general style - body: games.html and game-view.html */
 body{
     font-family: Verdana,sans-serif;
     font-size: 12px;
@@ -12,16 +13,31 @@ body h3{
     
 }
 
+/*background*/
+#background-img{
+    background-image: url('../styles/images/background\ paws\,\ bones\,\ fish.jpg');
+    background-size: cover;
+    background-repeat: repeat;
+    background-position: center;
+    position: absolute;
+    display: block;
+    width: 100vw;
+    height: 100vh;
+}
+
+
+/*username - games.html*/
 #username{
     font-size: 25px;
 }
 
+ /*error: not allowed error 403 - game-view.html */
 #error{
     display: none;
 }
 
 #error.show{
-    background-image: url('../images/403-forbidden-error.jpg');
+    background-image: url('../styles/images/403-forbidden-error.jpg');
     background-size: cover;
     background-repeat: no-repeat;
     background-position: center;
@@ -32,14 +48,35 @@ body h3{
     height: 100vh;
 }
 
-#ships-added:hover{
-    display: none,
+
+/* games list table - games.html*/
+#not-available{
+    margin: 0;
+    padding: 9px;
 }
 
+/* paws (salvoes fire) - game-view.html*/
 .salvoes-img{
-    background-image: url('../images/paw\ salvo.png');
+    background-image: url('../styles/images/paw\ salvo.png');
     background-size: contain;
 }
 
+/* buttons - game-view.html */
+#add-ships{
+    margin-top: 20px;
+    display: inline-block;
+    margin-left: 368px;
+}
 
+#ships-added{
+    margin-top: 20px;
+    display: inline-block;
+    margin-left: 380px;
+}
+
+#add-salvoes{
+    margin-top: 20px;
+    display: inline-block;
+    margin-left: 368px;
+}
 

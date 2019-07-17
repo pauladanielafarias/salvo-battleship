@@ -23,16 +23,23 @@
     <!--My css-->
     <link rel="stylesheet" href="styles/style.css" />
 
+    <!--Fontawesome kit (icons) - script from my account in fontawesome.com-->
+    <script src="https://kit.fontawesome.com/597c196d2d.js"></script>
+
 </head>
 
-<body>
+<body >
     <div id="error" onclick="location.href='games.html'">
     </div>
 
     <div id="app">
         <!--ROW 1: BACK TO HOME BUTTON-->
         <div class="w3-row-padding w3-left w3-margin-top">
-            <button onclick="location.href='games.html'" class="w3-button w3-blue w3-border">Home</button> 
+            <button onclick="location.href='games.html'" class="w3-btn w3-hover-none w3-hover-opacity w3-white w3-ripple">
+                <span style="font-size: 20px; color: teal;">
+                    <i class="fas fa-arrow-circle-left"> Back</i>
+                </span>
+            </button> 
         </div>
         <!--ROW 2: TITLE-->
         <div class="w3-row-padding w3-center">
@@ -57,19 +64,19 @@
                 <div>
                     <template v-if="ships.length == 0">
                         <div id="add-ships">
-                            <button onclick="addShips()" class="w3-button w3-small w3-border w3-margin">Add Ships</button>
+                            <button onclick="addShips()" class="w3-btn w3-medium w3-ripple w3-border w3-round w3-padding">Add Ships</button>
                         </div>
                     </template>
                     <template v-else>
-                        <span id="ships-added" class="w3-btn w3-padding w3-small w3-border w3-margin">Ships Added</span> 
+                        <span id="ships-added" class="w3-text-black w3-medium w3-hover-text-red w3-padding">Ships Added</span> 
                     </template>
                 </div>
             </div>  
 
             <!--SALVO GRID-->
             <div class="w3-col s12 m12 l6 w3-padding">
-                <div class="w3-margin-bottom">
-                    <h3 id="salvoes-grid-title">Salvoes Grid</h3>
+                <div>
+                    <h3>Salvoes Grid</h3>
                 </div>
                 <div class="grid-salvoes">
                     <div id="grid" class="grid-stack grid-stack-10">
@@ -77,11 +84,12 @@
                 </div>
                 <div>
                     <template>
-                        <button onclick="postSalvoes()" class="w3-btn w3-small w3-border w3-margin-top"> Add Salvoes</button>
+                        <button id="add-salvoes" onclick="postSalvoes()" class="w3-btn w3-medium w3-ripple w3-border w3-round w3-padding"> 
+                            Add Salvoes</button>
                     </template>  
                 </div>
             </div>
-        </div>
+        </div> </br>
 
         <!--ROW 5: HITS AND SINKS TABLE-->
         <div class="w3-row-padding">

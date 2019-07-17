@@ -7,7 +7,7 @@
 
 
 .grid-salvoes{
-    background-image: url(ocean.gif);
+    background-image: url('../styles/gifs/pusheen.gif');
     background-size: cover;
     border: 2px solid rgb(128,128,128);
     border-radius: 10px;
@@ -45,7 +45,6 @@
     align-items: center;
 }
 .grid-cell span{
-    
     margin: auto
 }
 
@@ -55,11 +54,11 @@
 }
 
 .grid-row:first-child .grid-cell{
-    background-color: rgba(170,169,173,0.7);
+    background-color: lightgrey;
 }
 
 .grid-cell:first-child{
-    background-color: rgba(170,169,173,0.7);
+    background-color: lightgrey;
 }
 
  .grid-salvoes .salvo{

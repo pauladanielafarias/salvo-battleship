@@ -15,10 +15,15 @@
     <!--w3.css stylesheet, w3pro.css stylesheet and color libraries-->
     <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
     <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3pro.css">
+    <link rel="stylesheet" href=" https://www.w3schools.com/lib/w3-colors-flat.css">
+    <link rel="stylesheet" href="https://www.w3schools.com/lib/w3-colors-2017.css">
     <link rel="stylesheet" href="https://www.w3schools.com/lib/w3-colors-2018.css">
+    <link rel="stylesheet" href="https://www.w3schools.com/lib/w3-colors-2019.css">
+    
+
 
 </head>
-<body>
+<body id="background-img">
     <div id="app">
 
         <!--ROW 1: Login Form + Register/Sign Up form + Welcome + Logout Button -->
@@ -31,7 +36,7 @@
                             <label>Username: </br> <input type="email" name="username" required></label></br>
                             <label>Password: </br> <input type="password" name="password" required></label></br></br>
                             <button onclick="login(event,false)" 
-                            class="w3-btn w3-light-grey w3-border w3-round w3-hover-light-green">
+                            class="w3-btn w3-light-grey w3-border w3-round w3-hover-light-green w3-ripple">
                                 Log in
                             </button>
                         </form></br>
@@ -56,7 +61,7 @@
                                 <form name="signupForm" class="w3-container w3-center w3-margin">
                                     <label>Email: </br> <input type="email" name="username" required></label></br>
                                     <label>Password: </br> <input type="password" name="password" required></label></br></br> 
-                                    <button onclick="signup(event)" class="w3-btn w3-light-grey w3-border w3-round w3-margin">
+                                    <button onclick="signup(event)" class="w3-btn w3-light-grey w3-border w3-round w3-margin w3-ripple">
                                         Sign up
                                     </button> 
                                 </form>
@@ -80,41 +85,52 @@
             <!--Username + Logout Button + Create Game Button-->
             <div v-else>
                 <div class="container">
-                    <div class="w3-col s8 m8 l8 w3-margin">
-                        <!--Username -->
-                        <h2 id="username">Username: </br><span>{{currentPlayer}}</span></h2>
-                    </div>
-                    <div class="w3-col s4 m4 l4 w3-margin ">
+                    <div class="w3-row-padding w3-margin w3-right">
                         <!--Logout button -->
-                        <button onclick="logout(event)" class="w3-button w3-light-grey w3-border">Log out</button>
+                        <button onclick="logout(event)" class="w3-btn w3-light-grey w3-border w3-ripple">Log out</button>
+                    </div>
+
+                    <div class="w3-row-padding">
+                        <!--Username -->
+                        <h2 class="w3-tag w3-light-grey w3-border w3-round w3-padding w3-right w3-margin-right w3-left-align" id="username">
+                            Username: </br>
+                            <span class="w3-text-purple w3-center">{{currentPlayer}}</span>
+                        </h2>
+                    </div>
+
+                    <div class="w3-row-padding w3-margin w3-right">
                         <!--Create game button -->
                         <template  v-if="currentPlayer != 'GUEST'">
-                            <a onclick="createGame(event)" class="w3-button w3-light-grey w3-border">Create New Game</a>
+                            <a onclick="createGame(event)" class="w3-btn w3-light-grey w3-border w3-ripple">
+                                Create New Game</a>
                         </template>
                     </div>
+        
                 </div>
             </div>
-        </div></br>
+        </div>
 
         <!------------------------LIST OF GAMES----------------------------->
         <!--ROW 2: list title-->
-        <div class="w3-row-padding">
-            <h2>List of games</h2>
+        <div class="w3-row-padding w3-margin-left">
+            <h2 class="w3-tag w3-2018-pink-lavender w3-padding w3-border">List of games</h2>
         </div>
 
         <!--ROW 3: games list table-->
-        <div id="games-table" class="w3-row-padding">
+        <div id="games-table" class="w3-row-padding w3-margin-right">
             <div class="w3-col s12 m12 l12">
-                <table class="w3-table w3-striped w3-bordered w3-border w3-centered">
-                    <thead class="w3-light-grey">
-                        <th>Game Id</th>
-                        <th>Created</th>
-                        <th>Player 1</th>
-                        <th>Player 2</th>
-                        <th v-if="currentPlayer != 'GUEST'">Game description</th>
+                <table class="w3-table w3-border w3-bordered w3-striped w3-centered">
+                    <thead>
+                        <tr class="w3-2018-pink-lavender">
+                            <th>Game Id</th>
+                            <th>Created</th>
+                            <th>Player 1</th>
+                            <th>Player 2</th>
+                            <th v-if="currentPlayer != 'GUEST'">Game description</th>
+                        </tr>
                     </thead>
                     <tbody>
-                        <tr v-for="game in games">
+                        <tr v-for="game in games"class="w3-2017-ballet-slipper" >
                             <!--game id col-->
                             <td>{{game.id}}</td>
 
@@ -127,21 +143,29 @@
                             </template>
                             <template v-else>
                                 <td>{{game.gamePlayers[0].player.email}}</td>
-                                <td>Waiting...</td>
+                                <td class="w3-hover-text-blue">Waiting...</td>
                             </template>
                             
                             <!--description col-->
                             <template v-if="currentPlayer != 'GUEST'">
                                 <template v-for="gamePlayer in game.gamePlayers">
                                     <template v-if="gamePlayer.player.email == currentPlayer">
-                                        <td><a :href="'game-view.html?gp='+gamePlayer.id" class="w3-button w3-border">Enter game</a></td>
+                                        <td>
+                                            <a :href="'game-view.html?gp='+gamePlayer.id" class="w3-btn w3-border w3-round w3-pale-green w3-hover-light-green w3-ripple">
+                                                Enter game</a>
+                                        </td>
                                     </template>
                                     <template v-else-if="gamePlayer.player.email != currentPlayer && game.gamePlayers.length == 1">   
-                                        <td><a onclick="joinGame(event)" :data-id="game.id" class="w3-button w3-border">Join game</a></td>
+                                        <td>
+                                            <a onclick="joinGame(event)" :data-id="game.id" class="w3-btn w3-border w3-round w3-hover-amber w3-pale-yellow w3-ripple">
+                                                Join game</a>
+                                        </td>
                                     </template>
                                 </template>      
                                 <template v-if="game.gamePlayers.length == 2 && game.gamePlayers[0].player.email != currentPlayer && game.gamePlayers[1].player.email != currentPlayer">
-                                        <td><p>Not available</p></td>
+                                        <td>
+                                            <p id="not-available" class="w3-text-dark-grey w3-hover-text-red">Not available</p>
+                                        </td>
                                 </template> 
                         </template>
                         </tr>
@@ -152,30 +176,34 @@
 
         <!------------------------LEADERBOARD (SCORES) TABLE ----------------------------->
         <!--ROW 4: leaderboard title-->
-        <div class="w3-row-padding">
+        <div class="w3-row-padding w3-margin-left">
             <div>
-                <h2 class="w3-center">Leaderboard</h2>
+                <h2 class=" w3-tag w3-2019-creme-de-peche w3-padding w3-border">Leaderboard</h2>
             </div>
         </div>
 
         <!--ROW 5: score table-->
-        <div id="score-table" class="w3-row-padding">
+        <div id="score-table" class="w3-row-padding w3-margin-right">
             <div class="w3-col s12 m12 l12">
-                <table class="w3-table w3-striped w3-bordered w3-border w3-centered w3-margin-bottom">  
-                    <thead class="w3-light-grey">
-                        <th>Username</th>
-                        <th>Won</th>
-                        <th>Tied</th>
-                        <th>Lost</th>
-                        <th>Total Score</th>
+                <table class="w3-table w3-striped w3-bordered w3-border w3-card-4 w3-centered w3-margin-bottom">  
+                    <thead>
+                        <tr class="w3-2019-creme-de-peche">
+                            <th>Place</th>
+                            <th>Username</th>
+                            <th>Won</th>
+                            <th>Tied</th>
+                            <th>Lost</th>
+                            <th>Total Score</th>
+                        </tr>
                     </thead>
                     <tbody>
-                        <tr v-for="leader in leaders()">
-                            <td>{{leader.username}}</td>
+                        <tr v-for="leader in leaders()" class="w3-2018-coconut-milk">
+                            <td>{{}}°</td>
+                            <td><b>{{leader.username}}</b></td>
                             <td>{{leader.won}}</td>
                             <td>{{leader.tied}}</td>
                             <td>{{leader.lost}}</td>
-                            <td>{{leader.score}}</td>
+                            <td><b class="w3-text-purple">{{leader.score}}</b></td>
                         </tr>
                     </tbody>
                 </table>

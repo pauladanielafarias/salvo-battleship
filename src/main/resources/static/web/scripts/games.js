@@ -105,13 +105,19 @@ var app = new Vue({
     data: {
      currentPlayer: "",
      games: [],
-     url: []
+     url: [], 
+     counter: 0,
+     place:0,
+
     },
     
     methods:{
         //sort by max
         sortByMax: function(a,b){
             return b-a
+        },
+        addOne: function(){
+            this.counter++;
         },
         //leaders (leaderboard)
         leaders: function(){
@@ -124,7 +130,7 @@ var app = new Vue({
                         aux.push(gp.player.id)
 
                         //creates an object that will have the username and scores
-                        let obj = {} 
+                        let obj = {}
                         obj.id = gp.player.id
                         obj.username = gp.player.email
                         obj.score = gp.score
@@ -132,6 +138,7 @@ var app = new Vue({
                         obj.lost = gp.score == 0.0? 1:0;
                         obj.tied = gp.score == 0.5? 1:0;
                         leaders.push(obj)
+                        
 
                     }else{
                         leaders.forEach(leader => {
@@ -146,7 +153,7 @@ var app = new Vue({
                 })
             });
             //sorts leaders by the highest score
-            leaders.sortByMax
+            leaders.sortByMax            
             return leaders
         },
 

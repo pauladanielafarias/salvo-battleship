@@ -72,7 +72,8 @@
 
 
 .grid-ships{
-    background-image: url(ocean.gif);
+    background-color: lightsteelblue;
+    background-image: url('../styles/gifs/Walking\ Paws.gif');
     background-size: cover;
     border: 2px solid rgb(128,128,128);
     border-radius: 10px;
@@ -109,22 +110,20 @@
     text-align: center;
     align-items: center;
 }
-.grid-cell span{
-    
+.grid-cell span{ 
     margin: auto
 }
 
 .busy-cell{
     background-color: rgba(0,119,190,0.5);
-    
 }
 
 .grid-row:first-child .grid-cell{
-    background-color: rgba(170,169,173,0.7);
+    background-color: lightgrey;
 }
 
 .grid-cell:first-child{
-    background-color: rgba(170,169,173,0.7);
+    background-color: lightgrey;
 }
 
 
