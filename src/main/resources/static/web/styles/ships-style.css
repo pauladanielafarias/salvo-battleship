@@ -1,10 +1,3 @@
-.grid-stack-item-content {
-    background-repeat: no-repeat;
-    
-    cursor: -webkit-grab;
-    cursor: -moz-grab;
-}
-
 .carrierHorizontal{
     background-image: url('ships/carrier.png');
     background-size: 85% 100%;
@@ -81,49 +74,6 @@
     width: 495px;
 }
 
-#grid{
-    margin: 45px 0 0 45px;
-    position: absolute;
-    width: 450px;
- 
-}
 
-.grid-wrapper{
-    display: flex;
-    flex-direction: column;
-}
-
-.grid-row{
-    display: flex;
-    flex-direction: row;
-}
-
-.grid-cell{
-    display: flex;
-    box-sizing: border-box;
-    width: 45px;
-    height: 45px;
-    border: 1.3px solid rgb(128,128,128);
-    border-radius: 10px;
-    vertical-align: middle;
-    font-weight: bold;
-    text-align: center;
-    align-items: center;
-}
-.grid-cell span{ 
-    margin: auto
-}
-
-.busy-cell{
-    background-color: rgba(0,119,190,0.5);
-}
-
-.grid-row:first-child .grid-cell{
-    background-color: lightgrey;
-}
-
-.grid-cell:first-child{
-    background-color: lightgrey;
-}
 
 

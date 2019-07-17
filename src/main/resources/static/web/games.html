@@ -197,8 +197,8 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr v-for="leader in leaders()" class="w3-2018-coconut-milk">
-                            <td>{{}}°</td>
+                        <tr v-for="(leader, index) in leaders()" class="w3-2018-coconut-milk">
+                            <td>{{index + 1}}°</td>
                             <td><b>{{leader.username}}</b></td>
                             <td>{{leader.won}}</td>
                             <td>{{leader.tied}}</td>

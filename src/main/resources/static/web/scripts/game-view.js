@@ -40,11 +40,10 @@ fetch("/api/game_view/"+ paramObj(location.search).gp, {mode:'no-cors'})
         //saving the ships from the json in vue.js
         app.ships = json.ships;
       
-
         // calling the funtion that prints the game players username
         printPlayersUsername(); 
 
-         if(gameView.ships.length == 0){
+        if(gameView.ships.length == 0){
             loadGrid(false); // loads grid. when there are still ships missing the grid is not static
         }else{
             loadGrid(true); // loads grid. when there are no ships missing the grid is static
@@ -53,6 +52,7 @@ fetch("/api/game_view/"+ paramObj(location.search).gp, {mode:'no-cors'})
         // loads salvoes when it loads the page
         salvoes();
         addSalvoes();
+        
         //changing the url so that the differents alerts can be shown on the correct part of the game
         if(paramObj(location.search).newgame != undefined && paramObj(location.search).newgame == 'true'){
             swal({text:"Hey " + app.currentPlayer +", you've created a new game! Have fun!", icon:"success", button: {text:"Great", className:"createdGame-button"}})

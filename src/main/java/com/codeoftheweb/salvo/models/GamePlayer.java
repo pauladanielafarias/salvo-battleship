@@ -17,22 +17,24 @@ public class GamePlayer {
 
     /* attributes with JPA annotations*/
     @Id  //says that the id instance variable holds the database key for this class.
-    @GeneratedValue(strategy = GenerationType.AUTO, generator = "native")  //tells JPA to use whatever ID generator is provided by the database system
-    @GenericGenerator(name = "native", strategy = "native")  //tells JPA to use whatever ID generator is provided by the database system.
+    @GeneratedValue(strategy = GenerationType.AUTO, generator = "native")
+    //tells JPA to use whatever ID generator is provided by the database system
+    @GenericGenerator(name = "native", strategy = "native")
+    //tells JPA to use whatever ID generator is provided by the database system.
     private long id;
 
     @ManyToOne(fetch = FetchType.EAGER) //when fetching a GamePlayer, JPA should automatically fetch the players
-    @JoinColumn(name="player_id") //tells Spring to create a player_id column in the GamePlayer class column
+    @JoinColumn(name = "player_id") //tells Spring to create a player_id column in the GamePlayer class column
     private Player player;
 
     @ManyToOne(fetch = FetchType.EAGER) //when fetching a GamePlayer, JPA should automatically fetch the game
-    @JoinColumn(name="game_id") //tells Spring to create a game_id column in the GamePlayer class column
+    @JoinColumn(name = "game_id") //tells Spring to create a game_id column in the GamePlayer class column
     private Game game;
 
-    @OneToMany(mappedBy="gamePlayer", fetch= FetchType.EAGER, cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "gamePlayer", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private Set<Ship> ships = new HashSet<>();
 
-    @OneToMany(mappedBy="gamePlayer", fetch= FetchType.EAGER, cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "gamePlayer", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private Set<Salvo> salvoes = new HashSet<>();
 
 
@@ -42,7 +44,8 @@ public class GamePlayer {
 
     /*constructors*/
 
-    public GamePlayer() { }
+    public GamePlayer() {
+    }
 
     public GamePlayer(LocalDateTime creationDate, Game game, Player player) {
         this.creationDate = creationDate;
@@ -107,7 +110,7 @@ public class GamePlayer {
         Map<String, Object> dto = new LinkedHashMap<String, Object>();
         dto.put("id", this.getId());
         dto.put("player", this.getPlayer().playersDTO());
-        if( this.getPlayerScore() != null)
+        if (this.getPlayerScore() != null)
             dto.put("score", this.getPlayerScore().getPoints());
         else
             dto.put("score", null);
@@ -122,6 +125,7 @@ public class GamePlayer {
         dto.put("gamePlayers", this.getGame().getGamePlayers().stream().map(gp -> gp.gamePlayersDTO()));
         dto.put("ships", this.getShips().stream().map(ship -> ship.shipsDTO()));
         dto.put("salvoes", this.getGame().getGamePlayers().stream().flatMap(gp -> gp.getSalvoes().stream().map(salvo -> salvo.salvoesDTO())));
+        dto.put("gameState", this.getGameState());
         return dto;
     }
 
@@ -140,9 +144,55 @@ public class GamePlayer {
     }
 
     //getting the score of a game from a player
-    public Score getPlayerScore(){
+    public Score getPlayerScore() {
         return player.getScore(game);
     }
 
 
-}
+    //-------- GAME LOGIC -------------
+    public String getGameState() {
+        String gameState = "";
+        GamePlayer opponent = this.getGame().getGamePlayers()
+                .stream()
+                .filter(gamePlayer -> gamePlayer.getId() != this.getId())
+                .findFirst().orElse(null);
+
+        int myTurn = this.getSalvoes()
+                .stream().mapToInt(Salvo::getTurn).max().orElse(1);
+
+        int opponentTurn = opponent.getSalvoes()
+                .stream().mapToInt(Salvo::getTurn).max().orElse(1);
+
+        // GAME STATE
+        if (this.getShips().size() == 0) {
+            gameState = "Please place your ships";
+        } else {
+            if (opponent == null) {
+                gameState = "Wait for your opponent";
+            } else {
+                if (opponent.getShips().size() == 0) {
+                    gameState = "Wait for your opponent to place their ships";
+                } else {
+                    if (this.getId() < opponent.getId()) {
+                        gameState = "You can shoot now";
+                    } else {
+                        gameState = "Wait for your opponent to shoot.";
+                    }
+                }
+            }
+        }
+    /*
+        if (opponent == null) {
+            gameState = "Wait for your opponent";
+        } else {
+            if (opponent != null && myTurn == opponentTurn && this.getId() < opponent.getId()) {
+                gameState = "It's your turn to shoot.";
+            } else {
+                gameState = "Wait for your opponent to shoot.";
+            }*/
+
+        return gameState;
+    }
+
+
+    } //end of class

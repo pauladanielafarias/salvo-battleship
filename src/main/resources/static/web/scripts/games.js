@@ -139,7 +139,6 @@ var app = new Vue({
                         obj.tied = gp.score == 0.5? 1:0;
                         leaders.push(obj)
                         
-
                     }else{
                         leaders.forEach(leader => {
                             if(leader.id == gp.player.id){
@@ -153,8 +152,12 @@ var app = new Vue({
                 })
             });
             //sorts leaders by the highest score
-            leaders.sortByMax            
-            return leaders
+            //leaders.sortByMax  
+            let leadersSortedByScore = leaders.sort(function(a,b){
+               return b.score - a.score
+            })
+            
+            return leadersSortedByScore
         },
 
         needLoginAlert: function(){

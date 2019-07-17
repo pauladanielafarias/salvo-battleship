@@ -1,4 +1,5 @@
-/* general style - body: games.html and game-view.html */
+/*----------------GENERAl STYLE -> body: games.html and game-view.html-------------*/
+
 body{
     font-family: Verdana,sans-serif;
     font-size: 12px;
@@ -26,42 +27,84 @@ body h3{
 }
 
 
-/*username - games.html*/
+/*----------------GAMES.HTML-------------*/
+
+/*username*/
 #username{
     font-size: 25px;
 }
 
- /*error: not allowed error 403 - game-view.html */
-#error{
-    display: none;
-}
 
-#error.show{
-    background-image: url('../styles/images/403-forbidden-error.jpg');
-    background-size: cover;
-    background-repeat: no-repeat;
-    background-position: center;
-    position: absolute;
-    z-index: 9999;
-    display: block;
-    width: 100vw;
-    height: 100vh;
-}
-
-
-/* games list table - games.html*/
+/* GAMES LIST TABLE */
 #not-available{
     margin: 0;
     padding: 9px;
 }
 
-/* paws (salvoes fire) - game-view.html*/
+
+/*----------------GAME-VIEW.HTML-------------*/
+
+/*------------GRIDS---------------*/
+.grid-stack-item-content {
+    background-repeat: no-repeat;
+    
+    cursor: -webkit-grab;
+    cursor: -moz-grab;
+}
+
+#grid{
+    margin: 45px 0 0 45px;
+    position: absolute;
+    width: 450px;
+}
+
+.grid-wrapper{
+    display: flex;
+    flex-direction: column;
+}
+
+.grid-row{
+    display: flex;
+    flex-direction: row;
+}
+
+.grid-cell{
+    display: flex;
+    box-sizing: border-box;
+    width: 45px;
+    height: 45px;
+    border: 1.3px solid rgb(128,128,128);
+    border-radius: 10px;
+    vertical-align: middle;
+    font-weight: bold;
+    text-align: center;
+    align-items: center;
+}
+
+.grid-cell span{ 
+    margin: auto
+}
+
+.busy-cell{
+    background-color: rgba(0,119,190,0.5);
+}
+
+.grid-row:first-child .grid-cell{
+    background-color: lightgrey;
+}
+
+.grid-cell:first-child{
+    background-color: lightgrey;
+}
+
+
+/* PAWS (salvoes fire)*/
 .salvoes-img{
     background-image: url('../styles/images/paw\ salvo.png');
     background-size: contain;
 }
 
-/* buttons - game-view.html */
+/* BUTTONS - game-view.html */
 #add-ships{
     margin-top: 20px;
     display: inline-block;
@@ -78,5 +121,22 @@ body h3{
     margin-top: 20px;
     display: inline-block;
     margin-left: 368px;
+}
+
+/*ERROR: not allowed error 403*/
+#error{
+    display: none;
+}
+
+#error.show{
+    background-image: url('../styles/images/403-forbidden-error.jpg');
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+    position: absolute;
+    z-index: 9999;
+    display: block;
+    width: 100vw;
+    height: 100vh;
 }
 
