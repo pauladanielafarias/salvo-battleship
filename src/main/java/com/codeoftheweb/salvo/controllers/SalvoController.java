@@ -147,8 +147,8 @@ public class SalvoController {
 
     /*---------------------------SHIPS---------------------------------*/
     @RequestMapping(path ="/games/players/{gamePlayerId}/ships")
-    public ResponseEntity<Object> addShips(@PathVariable long gamePlayerId, Authentication authentication, @RequestBody List<Ship> shipsList) {
-        ResponseEntity<Object> responseEntity;
+    public ResponseEntity<Map<String, Object>> addShips(@PathVariable long gamePlayerId, Authentication authentication, @RequestBody List<Ship> shipsList) {
+        ResponseEntity<Map<String, Object>> responseEntity;
 
         if(isGuest(authentication)){
             responseEntity = new ResponseEntity<>(makeMap("error", "Not logged in."), HttpStatus.UNAUTHORIZED);
@@ -182,8 +182,8 @@ public class SalvoController {
     /*---------------------------SALVOES---------------------------------*/
 
     @RequestMapping(path ="/games/players/{gamePlayerId}/salvoes")
-    public ResponseEntity<Object> addSalvoes(@PathVariable long gamePlayerId, Authentication authentication, @RequestBody List<String> shots) {
-        ResponseEntity<Object> responseEntity;
+    public ResponseEntity<Map<String, Object>> addSalvoes(@PathVariable long gamePlayerId, Authentication authentication, @RequestBody List<String> shots) {
+        ResponseEntity<Map<String, Object>> responseEntity;
 
         GamePlayer gamePlayer = gamePlayerRepo.findById(gamePlayerId); //yo sobreescribí el metodo findById() que te proporciona el JPA por el mío propio en mi gamePlayerRepo. Si no hubiera puesto ese método, ya existe un findById() que te retorna un true o false. Entonces esta línea de código sería GamePlayer gamePlayer = gamePlayerRepo.findById(gamePlayerId).orElse(null);
         if (gamePlayer == null) {

@@ -150,6 +150,8 @@ public class GamePlayer {
 
 
     //-------- GAME LOGIC -------------
+
+    // GAME STATE
     public String getGameState() {
         String gameState = "";
         GamePlayer opponent = this.getGame().getGamePlayers()
@@ -157,42 +159,48 @@ public class GamePlayer {
                 .filter(gamePlayer -> gamePlayer.getId() != this.getId())
                 .findFirst().orElse(null);
 
-        int myTurn = this.getSalvoes()
-                .stream().mapToInt(Salvo::getTurn).max().orElse(1);
-
-        int opponentTurn = opponent.getSalvoes()
-                .stream().mapToInt(Salvo::getTurn).max().orElse(1);
-
-        // GAME STATE
         if (this.getShips().size() == 0) {
             gameState = "Please place your ships";
+
         } else {
             if (opponent == null) {
                 gameState = "Wait for your opponent";
+
             } else {
                 if (opponent.getShips().size() == 0) {
                     gameState = "Wait for your opponent to place their ships";
+
                 } else {
-                    if (this.getId() < opponent.getId()) {
-                        gameState = "You can shoot now";
-                    } else {
-                        gameState = "Wait for your opponent to shoot.";
+                    int opponentTurn = opponent.getSalvoes()
+                            .stream().mapToInt(Salvo::getTurn).max().orElse(1);
+                    int myTurn = this.getSalvoes()
+                            .stream().mapToInt(Salvo::getTurn).max().orElse(1);
+
+                    if (this.getId() < opponent.getId() && myTurn == opponentTurn) {
+                        gameState = "It's your turn to shoot.";
+
+                    }else {
+                        if (this.getId() < opponent.getId() && myTurn > opponentTurn) {
+                            gameState = "Wait for your opponent to shoot.";
+
+                        }else {
+                            if (this.getId() > opponent.getId() && myTurn == opponentTurn) {
+                                gameState = "Wait for your opponent to shoot.";
+
+                            }else{
+                                if(this.getId() > opponent.getId() && myTurn < opponentTurn){
+                                    gameState = "It's your turn to shoot.";
+
+                                }
+                            }
+                        }
                     }
                 }
             }
         }
-    /*
-        if (opponent == null) {
-            gameState = "Wait for your opponent";
-        } else {
-            if (opponent != null && myTurn == opponentTurn && this.getId() < opponent.getId()) {
-                gameState = "It's your turn to shoot.";
-            } else {
-                gameState = "Wait for your opponent to shoot.";
-            }*/
 
         return gameState;
     }
 
 
-    } //end of class
+} //end of class

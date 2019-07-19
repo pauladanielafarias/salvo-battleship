@@ -19,93 +19,92 @@ var app = new Vue({
 getGameView()
 
 function getGameView(){
-fetch("/api/game_view/"+ paramObj(location.search).gp, {mode:'no-cors'})
-.then(function(response) {
-    return response.json()
-    
-}).then(function(json) {
-    //if there's a 403 error so the grid won't be display and the error 403 image will be displayed
-    if(json.error != undefined){
-        console.log(json.error)
-        document.getElementById('error').classList.add('show')
-        document.getElementById('app').style.display = 'none'
+    fetch("/api/game_view/"+ paramObj(location.search).gp, {mode:'no-cors'})
+    .then(function(response) {
+        return response.json()
         
-    } else{   
-        // if there's no error 403 so the grid will display 
-        document.getElementById('error').classList.remove('show')
-        document.getElementById('app').style.display = 'block'
+    }).then(function(json) {
+        //if there's a 403 error so the grid won't be display and the error 403 image will be displayed
+        if(json.error != undefined){
+            console.log(json.error)
+            document.getElementById('error').classList.add('show')
+            document.getElementById('app').style.display = 'none'
+            
+        } else{   
+            // if there's no error 403 so the grid will display 
+            document.getElementById('error').classList.remove('show')
+            document.getElementById('app').style.display = 'block'
+            
+            //saving the json in the variable gameView
+            gameView = json;
+            //saving the ships from the json in vue.js
+            app.ships = json.ships;
         
-        //saving the json in the variable gameView
-        gameView = json;
-        //saving the ships from the json in vue.js
-        app.ships = json.ships;
-      
-        // calling the funtion that prints the game players username
-        printPlayersUsername(); 
+            // calling the funtion that prints the game players username
+            printPlayersUsername(); 
 
-        if(gameView.ships.length == 0){
-            loadGrid(false); // loads grid. when there are still ships missing the grid is not static
-        }else{
-            loadGrid(true); // loads grid. when there are no ships missing the grid is static
-        }
+            if(gameView.ships.length == 0){
+                loadGrid(false); // loads grid. when there are still ships missing the grid is not static
+            }else{
+                loadGrid(true); // loads grid. when there are no ships missing the grid is static
+            }
 
-        // loads salvoes when it loads the page
-        salvoes();
-        addSalvoes();
-        
-        //changing the url so that the differents alerts can be shown on the correct part of the game
-        if(paramObj(location.search).newgame != undefined && paramObj(location.search).newgame == 'true'){
-            swal({text:"Hey " + app.currentPlayer +", you've created a new game! Have fun!", icon:"success", button: {text:"Great", className:"createdGame-button"}})
+            // loads salvoes when it loads the page
+            salvoes();
+            addSalvoes();
+            
+            //changing the url so that the differents alerts can be shown on the correct part of the game
+            if(paramObj(location.search).newgame != undefined && paramObj(location.search).newgame == 'true'){
+                swal({text:"Hey " + app.currentPlayer +", you've created a new game! Have fun!", icon:"success", button: {text:"Great", className:"createdGame-button"}})
+            }
+            if(paramObj(location.search).join != undefined && paramObj(location.search).join == 'true'){
+                swal({text:"Hey " + app.currentPlayer + ", you've joined a new game. Have fun!", icon:"success", button: {text:"Thanks", className:"join-button"}})
+            }
+            if(paramObj(location.search).newships!= undefined && paramObj(location.search).newships == 'true'){
+                swal({text:"You've added the ships. Now wait for another player to join you!", icon:"success", button: {text:"Great!", className:"newships-button"}})
+            }
+            if(paramObj(location.search).newsalvoes!= undefined && paramObj(location.search).newsalvoes == 'true'){
+                swal({text:"You've shot a paw! Now wait for the other player to fire back.", icon:"success", button: {text:"Great!", className:"newships-button"}})
+            }
         }
-        if(paramObj(location.search).join != undefined && paramObj(location.search).join == 'true'){
-            swal({text:"Hey " + app.currentPlayer + ", you've joined a new game. Have fun!", icon:"success", button: {text:"Thanks", className:"join-button"}})
-        }
-        if(paramObj(location.search).newships!= undefined && paramObj(location.search).newships == 'true'){
-            swal({text:"You've added the ships. Now wait for another player to join you!", icon:"success", button: {text:"Great!", className:"newships-button"}})
-        }
-        if(paramObj(location.search).newsalvoes!= undefined && paramObj(location.search).newsalvoes == 'true'){
-            swal({text:"You've shot a paw! Now wait for the other player to fire back.", icon:"success", button: {text:"Great!", className:"newships-button"}})
-        }
-    }
-}).catch(function(error){
-    console.log(error.error)
-    //swal({text:"Invalid Username or Password", icon:"warning", button:{className:"fail-login-button"}});
-});
+    }).catch(function(error){
+        console.log(error.error)
+        //swal({text:"Invalid Username or Password", icon:"warning", button:{className:"fail-login-button"}});
+    });
 }
 
 
 //-------------- SHIPS -------------------
 // add ships function that contains the fetch(post)
 function addShips(){
-let dataShips = []
-let shipsList = document.querySelectorAll(".grid-stack-item");
+    let dataShips = []
+    let shipsList = document.querySelectorAll(".grid-stack-item");
 
-shipsList.forEach(function(ship){
-    let x = +(ship.dataset.gsX);
-    let y = +(ship.dataset.gsY);
-    let w = +(ship.dataset.gsWidth);
-    let h = +(ship.dataset.gsHeight);
-    let obj={};
-    let locs = []
-    let type = ship.id;
+    shipsList.forEach(function(ship){
+        let x = +(ship.dataset.gsX);
+        let y = +(ship.dataset.gsY);
+        let w = +(ship.dataset.gsWidth);
+        let h = +(ship.dataset.gsHeight);
+        let obj={};
+        let locs = []
+        let type = ship.id;
 
-    if(h>w){
-        for(i=0; i< h; i++){
-            locs.push(String.fromCharCode(65+y+i)+(x+1))
+        if(h>w){
+            for(i=0; i< h; i++){
+                locs.push(String.fromCharCode(65+y+i)+(x+1))
+            }
+        }else{
+            for(i=0; i< w; i++){
+                locs.push(String.fromCharCode(65+y)+(x+1+i))
+            }
         }
-    }else{
-        for(i=0; i< w; i++){
-            locs.push(String.fromCharCode(65+y)+(x+1+i))
-        }
-    }
+        obj.locations = locs;
+        obj.shipType = type;
 
-    obj.locations = locs;
-    obj.shipType = type;
-
-    dataShips.push(obj)
-})
+        dataShips.push(obj)
+    })
 //adding the ships fetch (post)
- fetch("/api/games/players/" + paramObj(location.search).gp + "/ships",{
+    fetch("/api/games/players/" + paramObj(location.search).gp + "/ships",{
         method:'POST',
         body: JSON.stringify(dataShips),
         headers: {'Content-Type': 'application/json'}
@@ -113,10 +112,12 @@ shipsList.forEach(function(ship){
     })
     .then(function(response) {
         return response.json()
-    }).then(function(json) {
+    })
+    .then(function(json) {
         console.log(json)
         window.location.replace("game-view.html?gp="+paramObj(location.search).gp+"&newgame=false&join=false&newships=true")
-    }).catch(function(error){
+    })
+    .catch(function(error){
         console.log(error)
     })
 }
@@ -154,8 +155,8 @@ function addSalvoes(){
     salvoesPaws.forEach(function(paw){
         let y = paw.dataset.y; // letter
         let x = +(paw.dataset.x); // number
-
         let location = y+x;
+
         app.dataSalvoes.push(location);  
     })
 
@@ -177,7 +178,8 @@ function addSalvoes(){
     })
     .catch(function(error){
         return error
-    }).then(function(jsonError){
+    })
+    .then(function(jsonError){
         if(jsonError != undefined){
             console.log(jsonError)
             swal({text:jsonError.error, button: {text:"Ok", className:"paws-button"}})
@@ -417,12 +419,11 @@ const listenBusyCells = function(id){
 }
 
 /*SALVOES GRID*/
-
 createGrid(11, $(".grid-salvoes"), 'salvoes')
 
 
-  //adding the salvoes already created in the back-end
-  function salvoes(){
+//adding the salvoes already created in the back-end
+function salvoes(){
     let sinks = []
 
     gameView.salvoes.forEach(salvo => {

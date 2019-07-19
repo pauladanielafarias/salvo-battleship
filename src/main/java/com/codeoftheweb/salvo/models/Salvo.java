@@ -111,7 +111,7 @@ public class Salvo {
         return hits;
     }
 
-    private List<Map<String, Object>> getSinks(){
+    public List<Map<String, Object>> getSinks(){
         GamePlayer opponent = this.getGamePlayer().getGame().getGamePlayers()
                 .stream()
                 .filter(gamePlayer -> gamePlayer.getId() != this.getGamePlayer().getId())
