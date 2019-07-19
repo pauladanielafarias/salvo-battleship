@@ -261,17 +261,17 @@ public class SalvoApplication {
 
 
 			/* 7) creating the scores*/
-			Score score1 = new Score(p1, g1, 1, LocalDateTime.now());
+			Score score1 = new Score(p1, g1, 3, LocalDateTime.now());
 			Score score2 = new Score(p2, g1, 0, LocalDateTime.now());
 
-			Score score3 = new Score(p1, g2, 0.5, LocalDateTime.now());
-			Score score4 = new Score(p2, g2, 0.5, LocalDateTime.now());
+			Score score3 = new Score(p1, g2, 1, LocalDateTime.now());
+			Score score4 = new Score(p2, g2, 1, LocalDateTime.now());
 
-			Score score5 = new Score(p2, g3, 1, LocalDateTime.now());
+			Score score5 = new Score(p2, g3, 3, LocalDateTime.now());
 			Score score6 = new Score(p4, g3, 0, LocalDateTime.now());
 
-			Score score7 = new Score(p2, g4, 0.5, LocalDateTime.now());
-			Score score8 = new Score(p1, g4, 0.5, LocalDateTime.now());
+			Score score7 = new Score(p2, g4, 1, LocalDateTime.now());
+			Score score8 = new Score(p1, g4, 1, LocalDateTime.now());
 
 			Score score9 = new Score(p4, g5, LocalDateTime.now());
 			Score score10 = new Score(p1, g5, LocalDateTime.now());

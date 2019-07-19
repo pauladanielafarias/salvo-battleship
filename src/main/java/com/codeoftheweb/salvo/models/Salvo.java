@@ -93,7 +93,7 @@ public class Salvo {
 
     /*other methods*/
 
-    private List<String> getHits(){
+    public List<String> getHits(){
         GamePlayer opponent = this.getGamePlayer().getGame().getGamePlayers()
                 .stream()
                 .filter(gamePlayer -> gamePlayer.getId() != this.getGamePlayer().getId())

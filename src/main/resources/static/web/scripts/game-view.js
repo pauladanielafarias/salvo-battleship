@@ -149,7 +149,7 @@ function addSalvoes(){
 
  //adding the salvoes fetch(post)
  function postSalvoes(){
-    app.dataSalvoes = []
+    let postSalvoes = []
     let salvoesPaws = document.querySelectorAll(".grid-salvoes .grid-cell.salvoes-img");
     //posting the salvos to the back-end
     salvoesPaws.forEach(function(paw){
@@ -157,12 +157,12 @@ function addSalvoes(){
         let x = +(paw.dataset.x); // number
         let location = y+x;
 
-        app.dataSalvoes.push(location);  
+        postSalvoes.push(location);  
     })
 
     fetch("/api/games/players/" + paramObj(location.search).gp + "/salvoes",{
         method:'POST',
-        body: JSON.stringify(app.dataSalvoes),
+        body: JSON.stringify(postSalvoes),
         headers: {'Content-Type': 'application/json'}
     })
     .then(function(response) {
@@ -345,10 +345,11 @@ const createGrid = function(size, element, id){
         for(let j = 0; j < size; j++){
             let cell = document.createElement('DIV')
             cell.classList.add('grid-cell')
-            if(i > 0 && j > 0)
-            cell.id = id+`${i - 1}${ j - 1}`
-            cell.dataset.y = String.fromCharCode(i - 1 + 65)
-            cell.dataset.x = j
+            if(i > 0 && j > 0){
+                cell.id = id+`${i - 1}${ j - 1}`
+                cell.dataset.y = String.fromCharCode(i - 1 + 65)
+                cell.dataset.x = j
+            }
 
             if(j===0 && i > 0){
                 let textNode = document.createElement('SPAN')

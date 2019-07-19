@@ -5,6 +5,7 @@ import com.codeoftheweb.salvo.repositories.GamePlayerRepository;
 import com.codeoftheweb.salvo.repositories.GameRepository;
 
 import com.codeoftheweb.salvo.repositories.PlayerRepository;
+import com.codeoftheweb.salvo.repositories.ScoreRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -146,7 +147,7 @@ public class SalvoController {
     }
 
     /*---------------------------SHIPS---------------------------------*/
-    @RequestMapping(path ="/games/players/{gamePlayerId}/ships")
+    @RequestMapping(path ="/games/players/{gamePlayerId}/ships", method = RequestMethod.POST)
     public ResponseEntity<Map<String, Object>> addShips(@PathVariable long gamePlayerId, Authentication authentication, @RequestBody List<Ship> shipsList) {
         ResponseEntity<Map<String, Object>> responseEntity;
 
@@ -180,34 +181,83 @@ public class SalvoController {
     }
 
     /*---------------------------SALVOES---------------------------------*/
+    @Autowired
+    private ScoreRepository scoreRepo;
 
-    @RequestMapping(path ="/games/players/{gamePlayerId}/salvoes")
+    @RequestMapping(path ="/games/players/{gamePlayerId}/salvoes", method = RequestMethod.POST)
     public ResponseEntity<Map<String, Object>> addSalvoes(@PathVariable long gamePlayerId, Authentication authentication, @RequestBody List<String> shots) {
         ResponseEntity<Map<String, Object>> responseEntity;
 
-        GamePlayer gamePlayer = gamePlayerRepo.findById(gamePlayerId); //yo sobreescribí el metodo findById() que te proporciona el JPA por el mío propio en mi gamePlayerRepo. Si no hubiera puesto ese método, ya existe un findById() que te retorna un true o false. Entonces esta línea de código sería GamePlayer gamePlayer = gamePlayerRepo.findById(gamePlayerId).orElse(null);
-        if (gamePlayer == null) {
+        GamePlayer currentGamePlayerId = gamePlayerRepo.findById(gamePlayerId); //yo sobreescribí el metodo findById() que te proporciona el JPA por el mío propio en mi gamePlayerRepo. Si no hubiera puesto ese método, ya existe un findById() que te retorna un true o false. Entonces esta línea de código sería GamePlayer gamePlayer = gamePlayerRepo.findById(gamePlayerId).orElse(null);
+
+        GamePlayer opponent =  currentGamePlayerId.getGame().getGamePlayers()
+                                .stream()
+                .filter(gp-> gp.getId() != currentGamePlayerId.getId())
+                .findFirst().orElse(null);
+
+        if (currentGamePlayerId == null) {
             responseEntity = new ResponseEntity<>(makeMap("error","There's no gamePlayer with that id."), HttpStatus.UNAUTHORIZED);
-        }
+        }else {
+            Player currentPlayer = playerRepo.findByUsername(authentication.getName());
+            if (currentGamePlayerId.getPlayer().getId() != currentPlayer.getId()) {
+                responseEntity = new ResponseEntity<>(makeMap("error", "The current user is not the gamePlayer the ID references"), HttpStatus.UNAUTHORIZED);
 
-        Player currentPlayer = playerRepo.findByUsername(authentication.getName());
-        if(gamePlayer.getPlayer().getId() != currentPlayer.getId()) {
-            responseEntity = new ResponseEntity<>(makeMap("error","The current user is not the gamePlayer the ID references"), HttpStatus.UNAUTHORIZED);
-        }
-        if(shots.size() > 5  )  {
-            responseEntity = new ResponseEntity<>(makeMap("error", "You cannot throw more than 5 paws"), HttpStatus.FORBIDDEN);
-        } else if(shots.size() == 0) {
-            responseEntity = new ResponseEntity<>(makeMap("error", "You have to throw at least one paw."), HttpStatus.FORBIDDEN);
-        } else{
-            int turn = gamePlayer.getSalvoes().size() +1;
-            Salvo newSalvo = new Salvo(shots, turn);
+            } else {
+                if (shots.size() > 5) {
+                    responseEntity = new ResponseEntity<>(makeMap("error", "You cannot throw more than 5 paws"), HttpStatus.FORBIDDEN);
 
-            gamePlayer.addSalvo(newSalvo);
-            gamePlayerRepo.save(gamePlayer);
-            responseEntity = new ResponseEntity<>(makeMap("success", "Salvo created!"), HttpStatus.CREATED);
+                } else {
+                    if (shots.size() == 0) {
+                        responseEntity = new ResponseEntity<>(makeMap("error", "You have to throw at least one paw."), HttpStatus.FORBIDDEN);
+
+                    } else {
+                        if (currentGamePlayerId.getGameState() == GameState.PLACE_SHIPS) {
+                            responseEntity = new ResponseEntity<>(makeMap("error", "Please place your ships."), HttpStatus.FORBIDDEN);
+
+                        } else {
+                            if (currentGamePlayerId.getGameState() == GameState.WAITING_FOR_OPPONENT) {
+                                responseEntity = new ResponseEntity<>(makeMap("error", "Wait for an opponent to join you"), HttpStatus.FORBIDDEN);
+
+                            } else {
+                                if (currentGamePlayerId.getGameState() == GameState.WAITING_FOR_OPPPONENT_SHIPS) {
+                                    responseEntity = new ResponseEntity<>(makeMap("error", "Wait for your opponent to place their ships"), HttpStatus.FORBIDDEN);
+
+                                } else {
+                                    if (currentGamePlayerId.getGameState() == GameState.WAITING_FOR_OPPONENT_SHOOT_SALVOES) {
+                                        responseEntity = new ResponseEntity<>(makeMap("error", "Wait for your opponent to shoot."), HttpStatus.FORBIDDEN);
+
+                                    } else {
+                                            int turn = currentGamePlayerId.getSalvoes().size() + 1;
+                                            Salvo newSalvo = new Salvo(shots, turn);
+
+                                            currentGamePlayerId.addSalvo(newSalvo);
+                                            gamePlayerRepo.save(currentGamePlayerId);
+
+                                            if(currentGamePlayerId.getGameState() == GameState.WON){
+                                                scoreRepo.save(new Score(currentGamePlayerId.getPlayer(),currentGamePlayerId.getGame(),3, LocalDateTime.now()));
+                                                scoreRepo.save(new Score(opponent.getPlayer(),opponent.getGame(),0, LocalDateTime.now()));
+                                            }else{
+                                                if(currentGamePlayerId.getGameState() == GameState.LOST){
+                                                    scoreRepo.save(new Score(currentGamePlayerId.getPlayer(),currentGamePlayerId.getGame(),0, LocalDateTime.now()));
+                                                    scoreRepo.save(new Score(opponent.getPlayer(),opponent.getGame(),3, LocalDateTime.now()));
+                                                }else{
+                                                    if(currentGamePlayerId.getGameState() == GameState.TIE){
+                                                        scoreRepo.save(new Score(currentGamePlayerId.getPlayer(),currentGamePlayerId.getGame(),1, LocalDateTime.now()));
+                                                        scoreRepo.save(new Score(opponent.getPlayer(),opponent.getGame(),1, LocalDateTime.now()));
+                                                    }
+                                                }
+                                            }
+
+                                            responseEntity = new ResponseEntity<>(makeMap("success", "Salvo created!"), HttpStatus.CREATED);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
         }
         return responseEntity;
-
     }
 
 

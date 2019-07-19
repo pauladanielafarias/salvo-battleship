@@ -28,7 +28,7 @@ public class Score {
 
 
     /* attributes without JPA annotations*/
-    private double points;
+    private int points;
 
     private LocalDateTime finishDate;
 
@@ -37,7 +37,7 @@ public class Score {
     public Score() {
     }
 
-    public Score(Player player, Game game, double points, LocalDateTime finishDate) {
+    public Score(Player player, Game game, int points, LocalDateTime finishDate) {
         this.player = player;
         this.game = game;
         this.points = points;
@@ -81,11 +81,11 @@ public class Score {
         this.game = game;
     }
 
-    public double getPoints() {
+    public int getPoints() {
         return points;
     }
 
-    public void setPoints(double points) {
+    public void setPoints(int points) {
         this.points = points;
     }
 

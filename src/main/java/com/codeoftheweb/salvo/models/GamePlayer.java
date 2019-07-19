@@ -2,13 +2,11 @@ package com.codeoftheweb.salvo.models;
 
 
 import java.time.LocalDateTime;
-import java.util.HashSet;
-import java.util.LinkedHashMap;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 import org.hibernate.annotations.GenericGenerator;
 import javax.persistence.*;
+import javax.validation.constraints.Max;
 
 //JPA annotations
 @Entity  //tells Spring to create a GamePlayer table for this class.
@@ -152,47 +150,66 @@ public class GamePlayer {
     //-------- GAME LOGIC -------------
 
     // GAME STATE
-    public String getGameState() {
-        String gameState = "";
+    public GameState getGameState() {
+        GameState gameState = GameState.UNDEFINED;
         GamePlayer opponent = this.getGame().getGamePlayers()
                 .stream()
                 .filter(gamePlayer -> gamePlayer.getId() != this.getId())
                 .findFirst().orElse(null);
 
         if (this.getShips().size() == 0) {
-            gameState = "Please place your ships";
+
+            gameState = GameState.PLACE_SHIPS; //"Please place your ships";
 
         } else {
             if (opponent == null) {
-                gameState = "Wait for your opponent";
+                gameState = GameState.WAITING_FOR_OPPONENT; //"Wait for your opponent";
 
             } else {
                 if (opponent.getShips().size() == 0) {
-                    gameState = "Wait for your opponent to place their ships";
+                    gameState = GameState.WAITING_FOR_OPPPONENT_SHIPS ;//"Wait for your opponent to place their ships";
 
                 } else {
                     int opponentTurn = opponent.getSalvoes()
-                            .stream().mapToInt(Salvo::getTurn).max().orElse(1);
+                            .stream().mapToInt(Salvo::getTurn).max().orElse(0) + 1;
                     int myTurn = this.getSalvoes()
-                            .stream().mapToInt(Salvo::getTurn).max().orElse(1);
+                            .stream().mapToInt(Salvo::getTurn).max().orElse(0) + 1;
 
                     if (this.getId() < opponent.getId() && myTurn == opponentTurn) {
-                        gameState = "It's your turn to shoot.";
+                        gameState = GameState.SHOOT_SALVOES; //"It's your turn to shoot.";
 
-                    }else {
-                        if (this.getId() < opponent.getId() && myTurn > opponentTurn) {
-                            gameState = "Wait for your opponent to shoot.";
+                    }else if (this.getId() < opponent.getId() && myTurn > opponentTurn) {
+                            gameState = GameState.WAITING_FOR_OPPONENT_SHOOT_SALVOES; //"Wait for your opponent to shoot.";
 
-                        }else {
-                            if (this.getId() > opponent.getId() && myTurn == opponentTurn) {
-                                gameState = "Wait for your opponent to shoot.";
+                    }else if (this.getId() > opponent.getId() && myTurn == opponentTurn) {
+                                gameState = GameState.WAITING_FOR_OPPONENT_SHOOT_SALVOES; //"Wait for your opponent to shoot.";
 
-                            }else{
-                                if(this.getId() > opponent.getId() && myTurn < opponentTurn){
-                                    gameState = "It's your turn to shoot.";
+                    }else if(this.getId() > opponent.getId() && myTurn < opponentTurn){
+                                    gameState = GameState.SHOOT_SALVOES; //"It's your turn to shoot.";
 
-                                }
-                            }
+                    }
+
+                    Salvo lastSalvo = this.getSalvoes().stream().filter(salvo -> salvo.getTurn() == myTurn).findFirst().orElse(null);
+                    Salvo opponentLastSalvo = opponent.getSalvoes().stream().filter(salvo -> salvo.getTurn() == myTurn).findFirst().orElse(null);
+
+
+                    if(lastSalvo != null && opponentLastSalvo != null){
+
+                        if(lastSalvo.getHits().size() >0){
+                            gameState = GameState.SHOOT_AGAIN; //"Hit! You can shoot again";
+                        }
+
+                        int mySinks = lastSalvo.getSinks().size();
+                        int opponentSinks = opponentLastSalvo.getSinks().size();
+
+                        if(myTurn == opponentTurn && mySinks == 5 && opponentSinks < 5){
+                            gameState = GameState.WON;
+
+                        }else if(myTurn == opponentTurn && mySinks < 5 && opponentSinks == 5){
+                            gameState = GameState.LOST;
+
+                        }else if(myTurn == opponentTurn && mySinks == 5 && opponentSinks == 5){
+                            gameState = GameState.TIE;
                         }
                     }
                 }
