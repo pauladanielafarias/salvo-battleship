@@ -98,31 +98,6 @@ body h3{
 }
 
 
-/* PAWS (salvoes fire)*/
-.salvoes-img{
-    background-image: url('../styles/images/paw\ salvo.png');
-    background-size: contain;
-}
-
-/* BUTTONS - game-view.html */
-#add-ships{
-    margin-top: 20px;
-    display: inline-block;
-    margin-left: 368px;
-}
-
-#ships-added{
-    margin-top: 20px;
-    display: inline-block;
-    margin-left: 380px;
-}
-
-#add-salvoes{
-    margin-top: 20px;
-    display: inline-block;
-    margin-left: 368px;
-}
-
 /*ERROR: not allowed error 403*/
 #error{
     display: none;
@@ -139,4 +114,39 @@ body h3{
     width: 100vw;
     height: 100vh;
 }
+
+
+/*WON, LOST, TIE*/
+
+.won{
+    background-image: url("../styles/images/victory\ cat\ \(won\).jpg");
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    padding-bottom: 400px;
+}
+
+.lost{
+    background-image: url("../styles/images/you\ lost\ \(cat\).jpeg");
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    padding-bottom: 400px;
+}
+
+.tie{
+    background-image: url("images/autobots-defeated.jpg");
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    padding-bottom: 400px;
+
+}
+
+/*Extra */
+
+.hidden{
+    display: none;
+}
+
 

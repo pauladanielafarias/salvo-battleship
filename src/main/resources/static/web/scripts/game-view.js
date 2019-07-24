@@ -9,7 +9,7 @@ var app = new Vue({
         currentPlayerId: "",
         ships: [] ,
         dataSalvoes: [],
-        
+        gameState: "",
      
     }       
 
@@ -39,7 +39,9 @@ function getGameView(){
             gameView = json;
             //saving the ships from the json in vue.js
             app.ships = json.ships;
-        
+            //saving the gameState from the json in vue.js
+            app.gameState = json.gameState;
+
             // calling the funtion that prints the game players username
             printPlayersUsername(); 
 
@@ -53,6 +55,9 @@ function getGameView(){
             salvoes();
             addSalvoes();
             
+            //loads game state
+            checkGameState();
+
             //changing the url so that the differents alerts can be shown on the correct part of the game
             if(paramObj(location.search).newgame != undefined && paramObj(location.search).newgame == 'true'){
                 swal({text:"Hey " + app.currentPlayer +", you've created a new game! Have fun!", icon:"success", button: {text:"Great", className:"createdGame-button"}})
@@ -173,6 +178,7 @@ function addSalvoes(){
         }     
     })
     .then(function(json) {
+        checkGameState()
         gameViewRefresh()
         console.log(json)
     })
@@ -187,18 +193,27 @@ function addSalvoes(){
     })
  }
 
+ var interval;
  function gameViewRefresh(){
-    fetch("/api/game_view/"+ paramObj(location.search).gp, {mode:'no-cors'})
-    .then(function(response) {
-        return response.json()
-    })
-    .then(function(json){
-        gameView = json;
-    })
-    .then(function(){
-        salvoes()
-    })
+    interval = setInterval(function(){
+        fetch("/api/game_view/"+ paramObj(location.search).gp, {mode:'no-cors'})
+        .then(function(response) {
+            return response.json()
+        })
+        .then(function(json){
+            gameView = json;
+        })
+        .then(function(){
+            salvoes();
+            checkGameState();
+        })
+        .catch(function(error){
+            console.log(error)
+        })
+    },1000)
  }
+ gameViewRefresh();
+
 
 //----------------- 
 // function that makes the symbols compatible on the url
@@ -468,7 +483,67 @@ function salvoes(){
 }
 
 
+//------------------------- GAME STATE -------------------
+//var interval;
+function checkGameState(){
+    //interval= setInterval(function(){
 
+        if(app.gameState == "WAITING_FOR_OPPONENT"){
+            $(".grid-salvoes").attr("id","wait-opponent")
+            document.getElementById("wait-opponent").innerHTML="<p>Waiting for an opponent...</p>"
+            console.log("gameState: Waiting for an opponent...")
 
+        } else if(app.gameState == "WAITING_FOR_OPPPONENT_SHIPS"){
+            $(".grid-salvoes").attr("id","wait-opponent-ships")
+            document.getElementById("wait-opponent-ships").innerHTML="<p>Wait for your opponent to place their ships</p>"
+            console.log("gameState: Wait for your opponent to place their ships")
 
+        }else if(app.gameState == "SHOOT_SALVOES"){
+            document.getElementById("game-state").classList.add("shoot-salvoes");
+            document.querySelector(".shoot-salvoes").innerHTML="You can throw your paws now!"
+            console.log("gameState: You can throw your paws now!")
 
+        }else if(app.gameState == "WAITING_FOR_OPPONENT_SHOOT_SALVOES"){
+            document.getElementById("game-state").classList.add("wait-opponent-shoot");
+            document.querySelector(".wait-opponent-shoot").innerHTML="Waiting for your enemy to throw paws at you..."
+            console.log("gameState: Waiting for your enemy to throw paws at you...")
+
+        }
+
+        if(app.gameState == "WON"){
+                /* when I have the cats vs dogs
+                if(currentPlayerData.side == "AUTOBOTS"){
+                   $("#win").addClass("autobots-victory")
+                } else {
+                    $("#win").addClass("decepticons-victory")
+                }
+                */
+
+                $("#won").addClass("won")
+                $("#play-field").hide(1000);
+                $("#won").show(1000);
+
+            } else if (app.gameState == "LOST"){
+                /*when I have the cats vs dogs
+                if(currentPlayerData.side == "AUTOBOTS"){
+                   $("#lose").addClass("autobots-defeated")
+                } else {
+                    $("#lose").addClass("decepticons-defeated")
+                }
+                */
+                $("#play-field").hide(1000);
+                $("#lost").show(1000);
+
+            } else if (app.gameState == "TIE"){
+                $("#tie").show(1000)
+            }
+    //},1000)
+}
+
+/*
+var timerId;
+function startInterval() {
+  timerId = setInterval(function() { console.log("hi"); }, 1000);
+}
+startInterval()
+*/

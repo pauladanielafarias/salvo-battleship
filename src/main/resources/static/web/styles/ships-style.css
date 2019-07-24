@@ -1,3 +1,6 @@
+/*game-view-html*/
+
+/*-----SHIPS-----*/
 .carrierHorizontal{
     background-image: url('ships/carrier.png');
     background-size: 85% 100%;
@@ -63,6 +66,7 @@
     width: 45px !important;
 }
 
+/*----GRID-----*/
 
 .grid-ships{
     background-color: lightsteelblue;
@@ -72,5 +76,31 @@
     border-radius: 10px;
     height: 495px;
     width: 495px;
+}
+
+/*-----BUTTONS-----*/
+#add-ships{
+    margin-top: 20px;
+    display: inline-block;
+    margin-left: 368px;
+}
+
+#ships-added{
+    margin-top: 20px;
+    display: inline-block;
+    margin-left: 380px;
+}
+
+/*------GAME STATE------*/
+#place-ships {
+    border: 2px solid purple;
+    padding: 10px;
+    padding-left: 170px;
+    padding-right: 170px;
+    text-align: center;
+    background-color: palevioletred;
+    margin-top: 0;
+    margin-left: 1px;
+    display: inline-block;
 }
 

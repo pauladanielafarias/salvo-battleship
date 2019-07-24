@@ -33,100 +33,124 @@
     </div>
 
     <div id="app">
-        <!--ROW 1: BACK TO HOME BUTTON-->
-        <div class="w3-row-padding w3-left w3-margin-top">
-            <button onclick="location.href='games.html'" class="w3-btn w3-hover-none w3-hover-opacity w3-white w3-ripple">
-                <span style="font-size: 20px; color: teal;">
-                    <i class="fas fa-arrow-circle-left"> Back</i>
-                </span>
-            </button> 
-        </div>
-        <!--ROW 2: TITLE-->
-        <div class="w3-row-padding w3-center">
-            <h2>Salvo Game</h2>
-        </div>  
+        <div id="play-field">
+            <!--ROW 1: BACK TO HOME BUTTON-->
+            <div class="w3-row-padding w3-left w3-margin-top">
+                <button onclick="location.href='games.html'" class="w3-btn w3-hover-none w3-hover-opacity w3-white w3-ripple">
+                    <span style="font-size: 20px; color: teal;">
+                        <i class="fas fa-arrow-circle-left"> Back</i>
+                    </span>
+                </button> 
+            </div>
+            <!--ROW 2: TITLE-->
+            <div class="w3-row-padding w3-center">
+                <h2>Salvo Game</h2>
+            </div>  
+            
+            <!--ROW 3: USERNAMES-->
+            <div id="users" class="w3-row-padding w3-center">
+                <h4>{{usernameP1}} (YOU) vs {{usernameP2}}</h4>
+            </div></br>
+
+            <!--ROW 4: GRIDS-->
+            <div class="w3-row-padding">
+
+                <!--SHIP GRID-->
+                <div class="w3-col s12 m12 l6 w3-padding">
+                    <h3>Ships Grid</h3>
+                    <template v-if="gameState == 'PLACE_SHIPS'">
+                        <p id="place-ships">Please place your ships!</p>
+                    </template>
+                    <div class="grid-ships">
+                        <div id="grid" class="grid-stack grid-stack-10">  
+                        </div>
+                    </div>
+                    <div>
+                        <template v-if="ships.length == 0">
+                            <div>
+                                <button onclick="addShips()" id="add-ships" class="w3-btn w3-medium w3-ripple w3-border w3-round w3-padding">
+                                    Add Ships</button>
+                            </div>
+                        </template>
+                        <template v-else>
+                            <span id="ships-added" class="w3-text-black w3-medium w3-hover-text-red w3-padding">Ships Added</span> 
+                        </template>
+                    </div>
+                </div>  
+
+                <!--SALVO GRID-->
+                <div class="w3-col s12 m12 l6 w3-padding">
+                    <div>
+                        <h3>Salvoes Grid</h3>
+                        <p id="game-state"> Game state...</p>
+                    </div>
+
+                    <div class="grid-salvoes">
+                    </div>
         
-        <!--ROW 3: USERNAMES-->
-        <div id="users" class="w3-row-padding w3-center">
-            <h4>{{usernameP1}} (YOU) vs {{usernameP2}}</h4>
-        </div></br>
-
-        <!--ROW 4: GRIDS-->
-        <div class="w3-row-padding">
-
-            <!--SHIP GRID-->
-            <div class="w3-col s12 m12 l6 w3-padding">
-                <h3>Ships Grid</h3>
-                <div class="grid-ships">
-                    <div id="grid" class="grid-stack grid-stack-10">  
+                    <div>
+                        <template v-if="gameState == 'SHOOT_SALVOES'">
+                            <button id="add-salvoes" onclick="postSalvoes()" class="w3-btn w3-medium w3-ripple w3-border w3-round w3-padding"> 
+                                Throw paws</button>
+                        </template> 
+                        <template v-else-if="gameState != 'WAITING_FOR_OPPONENT'">
+                            <span id="wait-to-shoot" class="w3-text-black w3-medium w3-hover-text-red w3-padding">
+                                Wait your turn to attack</span>
+                        </template> 
                     </div>
                 </div>
-                <div>
-                    <template v-if="ships.length == 0">
-                        <div id="add-ships">
-                            <button onclick="addShips()" class="w3-btn w3-medium w3-ripple w3-border w3-round w3-padding">Add Ships</button>
-                        </div>
-                    </template>
-                    <template v-else>
-                        <span id="ships-added" class="w3-text-black w3-medium w3-hover-text-red w3-padding">Ships Added</span> 
-                    </template>
-                </div>
-            </div>  
+            </div> </br>
 
-            <!--SALVO GRID-->
-            <div class="w3-col s12 m12 l6 w3-padding">
-                <div>
-                    <h3>Salvoes Grid</h3>
-                </div>
-                <div class="grid-salvoes">
-                </div>
-                <div>
-                    <template>
-                        <button id="add-salvoes" onclick="postSalvoes()" class="w3-btn w3-medium w3-ripple w3-border w3-round w3-padding"> 
-                            Add Salvoes</button>
-                    </template>  
-                </div>
-            </div>
-        </div> </br>
-
-        <!--ROW 5: HITS AND SINKS TABLE-->
-        <div class="w3-row-padding">
-            <div class="w3-col s6 m6 l6">
-                <table class="w3-table w3-striped w3-bordered w3-border w3-centered w3-padding w3-margin-bottom">
-                    <thead>
-                        <th colspan="3"> {{usernameP1}} (YOU)</th>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>Miaunemies Defeated</td> <!-- OR Woffponent K.O-->
-                            <td>My turn</td>
-                            <td>Paws you can fire</td>
-                        </tr>
-
-                        <tr>
-
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-            <div class="w3-col s6 m6 l6">
+            <!--ROW 5: HITS AND SINKS TABLE-->
+            <div class="w3-row-padding">
+                <div class="w3-col s6 m6 l6">
                     <table class="w3-table w3-striped w3-bordered w3-border w3-centered w3-padding w3-margin-bottom">
                         <thead>
-                            <th colspan="2">{{usernameP2}} (OPPONENT)</th>
+                            <th colspan="3"> {{usernameP1}} (YOU)</th>
                         </thead>
                         <tbody>
                             <tr>
-                                <td>Kittens attacked</td>
-                                <td>Opponent turn</td>
+                                <td>Miaunemies Defeated</td> <!-- OR Woffponent K.O-->
+                                <td>My turn</td>
+                                <td>Paws you can fire</td>
                             </tr>
 
                             <tr>
-                                
+
                             </tr>
                         </tbody>
                     </table>
                 </div>
+                <div class="w3-col s6 m6 l6">
+                        <table class="w3-table w3-striped w3-bordered w3-border w3-centered w3-padding w3-margin-bottom">
+                            <thead>
+                                <th colspan="2">{{usernameP2}} (OPPONENT)</th>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Kittens attacked</td>
+                                    <td>Opponent turn</td>
+                                </tr>
 
+                                <tr>
+                                    
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+            </div>
+        </div>
+
+        <div id="won" class="hidden">
+            <h1>YOU'VE WON</h1>
+        </div>
+
+        <div id="lost" class="hidden">
+            <h1>YOU'VE BEEN DEFEATED</h1>
+        </div>
+
+        <div id="tie" class="hidden">
+            <h1>YOU'VE TIED</h1>
         </div>
 
     </div>

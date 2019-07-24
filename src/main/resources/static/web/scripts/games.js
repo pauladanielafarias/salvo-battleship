@@ -105,20 +105,11 @@ var app = new Vue({
     data: {
      currentPlayer: "",
      games: [],
-     url: [], 
-     counter: 0,
-     place:0,
+     url: []
 
     },
     
     methods:{
-        //sort by max
-        sortByMax: function(a,b){
-            return b-a
-        },
-        addOne: function(){
-            this.counter++;
-        },
         //leaders (leaderboard)
         leaders: function(){
             let leaders = []
@@ -134,18 +125,18 @@ var app = new Vue({
                         obj.id = gp.player.id
                         obj.username = gp.player.email
                         obj.score = gp.score
-                        obj.won = gp.score == 1.0? 1:0;
-                        obj.lost = gp.score == 0.0? 1:0;
-                        obj.tied = gp.score == 0.5? 1:0;
+                        obj.won = gp.score == 3? 1:0;
+                        obj.lost = gp.score == 0? 1:0;
+                        obj.tied = gp.score == 1? 1:0;
                         leaders.push(obj)
                         
                     }else{
                         leaders.forEach(leader => {
                             if(leader.id == gp.player.id){
                                 leader.score += gp.score;
-                                leader.won += gp.score == 1.0? 1:0;
-                                leader.lost += gp.score == 0.0? 1:0;
-                                leader.tied += gp.score == 0.5? 1:0;
+                                leader.won += gp.score == 3? 1:0;
+                                leader.lost += gp.score == 0? 1:0;
+                                leader.tied += gp.score == 1? 1:0;
                             }
                         })
                     }
