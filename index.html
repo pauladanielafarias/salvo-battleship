@@ -151,7 +151,7 @@
                                 <template v-for="gamePlayer in game.gamePlayers">
                                     <template v-if="gamePlayer.player.email == currentPlayer">
                                         <td>
-                                            <a :href="'game-view.html?gp='+gamePlayer.id" class="w3-btn w3-border w3-round w3-pale-green w3-hover-light-green w3-ripple">
+                                            <a :href="'src/main/resources/static/web/game-view.html?gp='+gamePlayer.id" class="w3-btn w3-border w3-round w3-pale-green w3-hover-light-green w3-ripple">
                                                 Enter game</a>
                                         </td>
                                     </template>
